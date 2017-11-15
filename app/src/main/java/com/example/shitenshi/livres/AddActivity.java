@@ -32,7 +32,10 @@ public class AddActivity extends AppCompatActivity {
                 Editable productname = n.getText();
                 EditText p = (EditText) findViewById(R.id.editText);
                 Editable price = p.getText();
-                outgodbhelper.insertValues(Integer.valueOf(number),productname.toString(),Integer.valueOf(price.toString()));
+                outgodbhelper.insertValues(new DbContainer(
+                        spinner.getSelectedItem().toString(),
+                        productname.toString(),
+                        Integer.valueOf(price.toString())));
                 Toast.makeText(AddActivity.this, "ok", Toast.LENGTH_LONG).show();
                 finish();
 

@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.text.Editable;
 
 /**
  * Created by shitenshi on 17/10/24.
@@ -42,11 +41,11 @@ public class Outgodbhelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(DROP_TABLE_SQL);
 
     }
-    public void insertValues(Integer category, String Productname , Integer Price){
+    public void insertValues(DbContainer dbContainer){
         ContentValues values = new ContentValues();
-        values.put(Outgodbhelper.CATEGORY_KEY,category);
-        values.put(Outgodbhelper.PRODUCTNAME_KEY,Productname);
-        values.put(Outgodbhelper.PRICE_KEY,Price);
+        values.put(Outgodbhelper.CATEGORY_KEY,dbContainer.category);
+        values.put(Outgodbhelper.PRODUCTNAME_KEY,dbContainer.productname);
+        values.put(Outgodbhelper.PRICE_KEY,dbContainer.price);
         getWritableDatabase().insert(Outgodbhelper.TABLE_NAME,null,values);
 
 
