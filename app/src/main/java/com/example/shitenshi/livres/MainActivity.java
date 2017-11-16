@@ -27,19 +27,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent1 = getIntent();
         String text1 = intent1.getStringExtra("Data");
 
-        Outgodbhelper outgodbhelper = new Outgodbhelper(this);
-        List<DbContainer> l = outgodbhelper.getContainers();
 
-        //adapter prepare
-        String[] column = new String[l.size()];
-
-        for (int i = 0; i < l.size(); i++) {
-            column[i] = l.get(i).category + l.get(i).productname + l.get(i).price;
-        }
-
-        ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, column);
-
-        myListView.setAdapter(adapter);
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -73,5 +61,23 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Outgodbhelper outgodbhelper = new Outgodbhelper(this);
+        List<DbContainer> l = outgodbhelper.getContainers();
+
+        //adapter prepare
+        String[] column = new String[l.size()];
+
+        for (int i = 0; i < l.size(); i++) {
+            column[i] = l.get(i).category +"\n品目： " + l.get(i).productname + "\n値段：¥ " + l.get(i).price;
+        }
+
+        ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, column);
+
+        myListView.setAdapter(adapter);
     }
 }
