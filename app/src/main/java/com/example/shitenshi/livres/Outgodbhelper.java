@@ -2,8 +2,12 @@ package com.example.shitenshi.livres;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by shitenshi on 17/10/24.
@@ -41,6 +45,7 @@ public class Outgodbhelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(DROP_TABLE_SQL);
 
     }
+    //挿入用メソッド
     public void insertValues(DbContainer dbContainer){
         ContentValues values = new ContentValues();
         values.put(Outgodbhelper.CATEGORY_KEY,dbContainer.category);
@@ -49,5 +54,22 @@ public class Outgodbhelper extends SQLiteOpenHelper {
         getWritableDatabase().insert(Outgodbhelper.TABLE_NAME,null,values);
 
 
+    }
+
+    public List<DbContainer> getContainers(){
+        //db
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        List<DbContainer> list = new ArrayList<>();
+
+        //select
+        Cursor cursor = sqLiteDatabase.rawQuery("select * from " + TABLE_NAME,null);
+        while(cursor.moveToNext()){
+            list.add(new DbContainer(
+                    cursor.getString(1),
+                    cursor.getString(2),
+                    cursor.getInt(3)
+            ));
+        }
+        return list;
     }
 }

@@ -3,25 +3,43 @@ package com.example.shitenshi.livres;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    ListView myListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        myListView = (ListView)findViewById(R.id.myListView);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Intent intent1 = getIntent();
         String text1 = intent1.getStringExtra("Data");
+
+        Outgodbhelper outgodbhelper = new Outgodbhelper(this);
+        List<DbContainer> l = outgodbhelper.getContainers();
+
+        //adapter prepare
+        String[] column = new String[l.size()];
+
+        for (int i = 0; i < l.size(); i++) {
+            column[i] = l.get(i).category + l.get(i).productname + l.get(i).price;
+        }
+
+        ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, column);
+
+        myListView.setAdapter(adapter);
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
