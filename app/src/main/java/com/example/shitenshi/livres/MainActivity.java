@@ -1,8 +1,11 @@
 package com.example.shitenshi.livres;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -12,10 +15,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     ListView myListView;
+    ListView mydrawerList;
+    DrawerLayout myDrawerLayout;
+    public static final int PREFERENCE_INIT = 0;
+    public static final int PREFERENCE_BOOTED  = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,10 +34,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Intent intent1 = getIntent();
         String text1 = intent1.getStringExtra("Data");
-
-
-
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,6 +43,13 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private int getState (){
+        int state;
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        state =sp.getInt("InitState",PREFERENCE_INIT);
+        return state;
     }
 
     @Override
@@ -71,6 +82,8 @@ public class MainActivity extends AppCompatActivity {
 
         //adapter prepare
         String[] column = new String[l.size()];
+        Collections.reverse(l);
+
 
         for (int i = 0; i < l.size(); i++) {
             column[i] = l.get(i).category +"\n品目： " + l.get(i).productname + "\n値段：¥ " + l.get(i).price;
@@ -79,5 +92,10 @@ public class MainActivity extends AppCompatActivity {
         ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, column);
 
         myListView.setAdapter(adapter);
+        if(PREFERENCE_INIT == getState()){
+            Intent intent1 = new Intent(MainActivity.this, InitActivity.class);
+            startActivity(intent1);
+
+        }
     }
 }
