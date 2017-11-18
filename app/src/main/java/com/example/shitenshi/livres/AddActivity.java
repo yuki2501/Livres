@@ -21,9 +21,7 @@ public class AddActivity extends AppCompatActivity {
     Outgodbhelper outgodbhelper;
     private  static  final String PREFS_FILE = "HMPrefs";
     private  static  final String Havemoney = "Havemoney";
-    SharedPreferences prefs = getSharedPreferences(PREFS_FILE , Activity.MODE_PRIVATE);
 
-    SharedPreferences.Editor editor = prefs.edit();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +44,7 @@ public class AddActivity extends AppCompatActivity {
                     remainingmoney = havemoney + Integer.valueOf(price.toString());
                 }if (number==1){remainingmoney = havemoney - Integer.valueOf(price.toString());
                 }
+                SharedPreferences.Editor editor = prefs.edit();
                 editor.remove("Havemoney");
                 editor.putInt("Havemoney",remainingmoney);
                 editor.commit();
