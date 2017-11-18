@@ -88,19 +88,15 @@ public class MainActivity extends AppCompatActivity {
 
         for (int i = 0; i < l.size(); i++) {
 
-            if (l.get(i).category == "income"){
+            if ("income".equals(l.get(i).category)){
 
                 hugou = "+";
 
-            } if (l.get(i).category == "outgo"){
+            } if ("outgo".equals(l.get(i).category)){
 
                 hugou = "-";
 
-            }else {
-                hugou = "error";
-
             }
-
 
             column[i] ="品目： " + l.get(i).productname + "\n" +hugou+ l.get(i).price + "¥";
         }
