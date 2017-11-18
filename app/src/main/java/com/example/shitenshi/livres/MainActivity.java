@@ -20,7 +20,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     ListView myListView;
-    ListView mydrawerList;
+
     DrawerLayout myDrawerLayout;
     public static final int PREFERENCE_INIT = 0;
     public static final int PREFERENCE_BOOTED  = 1;
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
-            column[i] ="品目： " + l.get(i).productname + "\n" +hugou+ l.get(i).price + "¥";
+            column[i] ="品目： " + l.get(i).productname + "\n" +hugou+ l.get(i).price + "¥" + "\n" + "残金：" + l.get(i).remainingmoney;
         }
 
         ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, column);

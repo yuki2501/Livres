@@ -1,6 +1,8 @@
 package com.example.shitenshi.livres;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -17,6 +19,11 @@ import static com.example.shitenshi.livres.R.id.editText;
 public class AddActivity extends AppCompatActivity {
     private static final int MAIN_ACTIVITY = 101;
     Outgodbhelper outgodbhelper;
+    private  static  final String PREFS_FILE = "HMPrefs";
+    private  static  final String Havemoney = "Havemoney";
+    SharedPreferences prefs = getSharedPreferences(PREFS_FILE , Activity.MODE_PRIVATE);
+
+    SharedPreferences.Editor editor = prefs.edit();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,16 +33,29 @@ public class AddActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SharedPreferences prefs = getSharedPreferences(PREFS_FILE , Activity.MODE_PRIVATE);
                 Spinner spinner =(Spinner)findViewById(R.id.spinner);
+                int number = spinner.getSelectedItemPosition();
                 EditText n = (EditText) findViewById(R.id.editText2);
                 Editable productname = n.getText();
                 EditText p = (EditText) findViewById(R.id.editText);
                 Editable price = p.getText();
+                Integer havemoney = prefs.getInt(Havemoney,0);
+                Integer remainingmoney = 0;
+                if (number == 0){
+                    remainingmoney = havemoney + Integer.valueOf(price.toString());
+                }if (number==1){remainingmoney = havemoney - Integer.valueOf(price.toString());
+                }
+                editor.remove("Havemoney");
+                editor.putInt("Havemoney",remainingmoney);
+                editor.commit();
                 outgodbhelper.insertValues(new DbContainer(
                         spinner.getSelectedItem().toString(),
                         productname.toString(),
-                        Integer.valueOf(price.toString())));
+                        Integer.valueOf(price.toString()),
+                        remainingmoney));
                 Toast.makeText(AddActivity.this, "ok", Toast.LENGTH_LONG).show();
+
                 finish();
 
              }

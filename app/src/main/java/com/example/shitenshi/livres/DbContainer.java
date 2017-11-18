@@ -7,14 +7,16 @@ import android.content.Context;
  */
 
 public class DbContainer {
-    public DbContainer(String category, String productname, int price){
+    public DbContainer(String category, String productname, int price, int remainingmoney){
         this.category = category;
         this.productname = productname;
         this.price = price;
+        this.remainingmoney = remainingmoney;
     }
     String category;
     String productname;
     int price;
+    int remainingmoney;
 
 }
 
