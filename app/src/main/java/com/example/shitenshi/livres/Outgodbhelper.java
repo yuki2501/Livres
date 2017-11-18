@@ -23,8 +23,8 @@ public class Outgodbhelper extends SQLiteOpenHelper {
             "rowid integer primary key autoincrement," +
             CATEGORY_KEY + " string," +
             PRODUCTNAME_KEY + " string," +
-            PRICE_KEY + " integer" +
-            REMAININGMONEY_KEY + "integer" +
+            PRICE_KEY + " integer," +
+            REMAININGMONEY_KEY + " integer" +
             
 
             ")";
