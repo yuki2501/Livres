@@ -27,7 +27,6 @@ public class AddActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Spinner spinner =(Spinner)findViewById(R.id.spinner);
-                int number = spinner.getSelectedItemPosition();
                 EditText n = (EditText) findViewById(R.id.editText2);
                 Editable productname = n.getText();
                 EditText p = (EditText) findViewById(R.id.editText);

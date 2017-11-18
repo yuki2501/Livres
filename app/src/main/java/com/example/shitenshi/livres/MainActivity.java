@@ -83,10 +83,26 @@ public class MainActivity extends AppCompatActivity {
         //adapter prepare
         String[] column = new String[l.size()];
         Collections.reverse(l);
+        String hugou = null;
 
 
         for (int i = 0; i < l.size(); i++) {
-            column[i] = l.get(i).category +"\n品目： " + l.get(i).productname + "\n値段：¥ " + l.get(i).price;
+
+            if (l.get(i).category == "income"){
+
+                hugou = "+";
+
+            } if (l.get(i).category == "outgo"){
+
+                hugou = "-";
+
+            }else {
+                hugou = "error";
+
+            }
+
+
+            column[i] ="品目： " + l.get(i).productname + "\n" +hugou+ l.get(i).price + "¥";
         }
 
         ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, column);
