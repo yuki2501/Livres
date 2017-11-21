@@ -15,12 +15,14 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     ListView myListView;
+    AddActivity addActivity = new AddActivity();
 
     DrawerLayout myDrawerLayout;
     public static final int PREFERENCE_INIT = 0;
@@ -86,6 +88,9 @@ public class MainActivity extends AppCompatActivity {
         Outgodbhelper outgodbhelper = new Outgodbhelper(this);
         List<DbContainer> l = outgodbhelper.getContainers();
 
+        TextView nokori = (TextView) findViewById(R.id.textView2);
+        nokori.setText(String.valueOf(l.get(l.size()-1).remainingmoney));
+
         //adapter prepare
         String[] column = new String[l.size()];
         Collections.reverse(l);
@@ -115,5 +120,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent1);
 
         }
+
     }
 }
