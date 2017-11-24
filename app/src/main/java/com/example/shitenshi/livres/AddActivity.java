@@ -10,11 +10,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
 import static com.example.shitenshi.livres.R.id.editText;
+import static com.example.shitenshi.livres.R.id.textView2;
 
 public class AddActivity extends AppCompatActivity {
     private static final int MAIN_ACTIVITY = 101;
@@ -48,6 +50,8 @@ public class AddActivity extends AppCompatActivity {
                 editor.remove("Havemoney");
                 editor.putInt("Havemoney",remainingmoney);
                 editor.commit();
+
+
                 outgodbhelper.insertValues(new DbContainer(
                         spinner.getSelectedItem().toString(),
                         productname.toString(),

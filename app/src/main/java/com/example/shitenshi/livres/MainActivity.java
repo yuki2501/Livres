@@ -22,7 +22,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     ListView myListView;
-    AddActivity addActivity = new AddActivity();
 
     DrawerLayout myDrawerLayout;
     public static final int PREFERENCE_INIT = 0;
@@ -82,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         List<DbContainer> l = outgodbhelper.getContainers();
 
         TextView nokori = (TextView) findViewById(R.id.textView2);
-        nokori.setText(String.valueOf(l.get(l.size()-1).remainingmoney));
+        nokori.setText(String.valueOf(l.get(l.size()-1).remainingmoney + "円"));
 
         //adapter prepare
         String[] column = new String[l.size()];
