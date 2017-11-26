@@ -83,8 +83,6 @@ public class AddActivity extends AppCompatActivity {
                     for (int i = 0; i < l.size(); i++) {
                         column[i] = l.get(i).category + "," + l.get(i).productname + "," + l.get(i).price + "," + l.get(i).remainingmoney + "\n";
                         stringBuilder.append(column[i]);
-
-
                     }
                     try {
                         File file = getCSVDir("csv.csv");
@@ -93,10 +91,33 @@ public class AddActivity extends AppCompatActivity {
                         fileWriter.flush();
                         fileWriter.close();
                     } catch (FileNotFoundException e) {
+                        Toast.makeText(AddActivity.this,"FNE",Toast.LENGTH_LONG).show();
+                        try{ new ProcessBuilder("mkdir","/sdcard/Documents").start();
+
+
+                        }catch (IOException ignored){}
+                        try{new ProcessBuilder("touch","/sdcard/Documents/csv.csv").start();}
+                        catch (IOException ignored ){}
+                        File file = getCSVDir("csv.csv");
+                        FileWriter fileWriter = null;
+                        try {
+                            fileWriter = new FileWriter(file);
+                            fileWriter.write(fuckexele);
+                            fileWriter.flush();
+                            fileWriter.close();
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+
+
 
                     } catch (IOException e) {
                         e.printStackTrace();
+                        Toast.makeText(AddActivity.this,"IOEP",Toast.LENGTH_LONG).show();
                     }
+
+                }else {
+                    Toast.makeText(AddActivity.this,"あ",Toast.LENGTH_LONG).show();
 
                 }
                 finish();
