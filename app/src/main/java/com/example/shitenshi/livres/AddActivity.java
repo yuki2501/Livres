@@ -77,17 +77,20 @@ public class AddActivity extends AppCompatActivity {
                 if (toggleswitch == Boolean.TRUE) {
                     Outgodbhelper outgodbhelper = new Outgodbhelper(AddActivity.this);
                     List<DbContainer> l = outgodbhelper.getContainers();
-                    String fuckexele = "category,product,price,remainingmoney\n";
-                    StringBuilder stringBuilder = new StringBuilder(fuckexele);
+                    StringBuilder stringBuilder = new StringBuilder();
                     String[] column = new String[l.size()];
                     for (int i = 0; i < l.size(); i++) {
-                        column[i] = l.get(i).category + "," + l.get(i).productname + "," + l.get(i).price + "," + l.get(i).remainingmoney + "\n";
-                        stringBuilder.append(column[i]);
+                        if(i == 0){
+                            stringBuilder.append("category,product,price,remainingmoney\n");
+                        }else{
+                            column[i] = l.get(i).category + "," + l.get(i).productname + "," + l.get(i).price + "," + l.get(i).remainingmoney + "\n";
+                            stringBuilder.append(column[i]);
+                        }
                     }
                     try {
                         File file = getCSVDir("csv.csv");
                         FileWriter fileWriter = new FileWriter(file);
-                        fileWriter.write(fuckexele);
+                        fileWriter.write(stringBuilder.toString());
                         fileWriter.flush();
                         fileWriter.close();
                     } catch (FileNotFoundException e) {
@@ -102,7 +105,7 @@ public class AddActivity extends AppCompatActivity {
                         FileWriter fileWriter = null;
                         try {
                             fileWriter = new FileWriter(file);
-                            fileWriter.write(fuckexele);
+                            fileWriter.write(stringBuilder.toString());
                             fileWriter.flush();
                             fileWriter.close();
                         } catch (IOException e1) {
