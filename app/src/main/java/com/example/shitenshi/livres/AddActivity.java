@@ -1,42 +1,43 @@
 package com.example.shitenshi.livres;
 
 import android.app.Activity;
-import android.content.Intent;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.Editable;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import org.w3c.dom.Text;
+import android.widget.TimePicker;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
-import static com.example.shitenshi.livres.R.id.editText;
-import static com.example.shitenshi.livres.R.id.textView2;
+import butterknife.ButterKnife;
+import butterknife.OnItemSelected;
+
 
 public class AddActivity extends AppCompatActivity {
     private static final int MAIN_ACTIVITY = 101;
     Outgodbhelper outgodbhelper;
     private  static  final String PREFS_FILE = "HMPrefs";
     private  static  final String Havemoney = "Havemoney";
+    private static long time = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,7 @@ public class AddActivity extends AppCompatActivity {
         setContentView(R.layout.activity_addcard);
         outgodbhelper = new Outgodbhelper(this);
         Button button = (Button) findViewById(R.id.button);
+        ButterKnife.bind(this);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -72,7 +74,12 @@ public class AddActivity extends AppCompatActivity {
                         spinner.getSelectedItem().toString(),
                         productname.toString(),
                         Integer.valueOf(price.toString()),
-                        remainingmoney));
+                        remainingmoney,
+                        (time == -1)?new Date().getTime():time
+
+
+
+                        ));
                 Boolean toggleswitch = PreferenceManager.getDefaultSharedPreferences(AddActivity.this).getBoolean("switch_preference", false);
                 if (toggleswitch == Boolean.TRUE) {
                     Outgodbhelper outgodbhelper = new Outgodbhelper(AddActivity.this);
@@ -94,12 +101,11 @@ public class AddActivity extends AppCompatActivity {
                         fileWriter.flush();
                         fileWriter.close();
                     } catch (FileNotFoundException e) {
-                        Toast.makeText(AddActivity.this,"FNE",Toast.LENGTH_LONG).show();
-                        try{ new ProcessBuilder("mkdir","/sdcard/Documents").start();
+                        try{ new ProcessBuilder("mkdir","/sdcard/Livres").start();
 
 
                         }catch (IOException ignored){}
-                        try{new ProcessBuilder("touch","/sdcard/Documents/csv.csv").start();}
+                        try{new ProcessBuilder("touch","/sdcard/Livres/csv.csv").start();}
                         catch (IOException ignored ){}
                         File file = getCSVDir("csv.csv");
                         FileWriter fileWriter = null;
@@ -111,26 +117,12 @@ public class AddActivity extends AppCompatActivity {
                         } catch (IOException e1) {
                             e1.printStackTrace();
                         }
-
-
-
                     } catch (IOException e) {
                         e.printStackTrace();
-                        Toast.makeText(AddActivity.this,"IOEP",Toast.LENGTH_LONG).show();
-                    }
-
-                }else {
-                    Toast.makeText(AddActivity.this,"あ",Toast.LENGTH_LONG).show();
-
+                        }
                 }
                 finish();
             }
-
-
-
-
-
-
         });
 
     }
@@ -138,9 +130,74 @@ public class AddActivity extends AppCompatActivity {
     public File getCSVDir(String CSV) {
         // Get the directory for the user's public pictures directory.
         File file = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOCUMENTS), CSV);
+                "Livres"), CSV);
         return file;
     }
+    @OnItemSelected(R.id.spinner2)
+    public void onItemSelectedHogeSpinner(Spinner spinner) {
+
+        // リストの何番目が選択されたか
+        int position = spinner.getSelectedItemPosition();
+        // 選択されたアイテム名
+        String item = (String)spinner.getSelectedItem();
+        if(position == 1) {
+            DatePickerDialogFragment datePicker = new DatePickerDialogFragment();
+            datePicker.show(getSupportFragmentManager(), "datePicker");
+        }
+    }
+
+    public static class DatePickerDialogFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),this, year, month, dayOfMonth);
+
+            return datePickerDialog;
+        }
+
+        public void onDateSet(DatePicker view, final int year, final int month, final int day) {
+            final Calendar c = Calendar.getInstance();
+            int hour = c.get(Calendar.HOUR_OF_DAY);
+            int minute = c.get(Calendar.MINUTE);
+
+            TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener(){
+
+
+                @Override
+                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    SimpleDateFormat format = new SimpleDateFormat();
+                    format.applyPattern("yyyy/MM/dd/HH:mm");
+                    try {
+                        Date d = format.parse( toString().valueOf(year)+"/"+ toString().valueOf(month)+"/"+toString().valueOf(day)+"/"+toString().valueOf(hourOfDay)+":"+toString().valueOf(minute));
+                        time = d.getTime()/1000;
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+
+
+                }
+            }, hour, minute, true);
+            timePickerDialog.show();
+
+        }
 
     }
+
+
+
+
+
+
+
+
+
+    }
+
 

@@ -19,12 +19,14 @@ public class Outgodbhelper extends SQLiteOpenHelper {
     public static final String PRODUCTNAME_KEY = "productname";
     public static final String PRICE_KEY = "price";
     public static final String REMAININGMONEY_KEY = "remainingmoney";
+    public static final String TIME_KEY = "time";
     private static final String CREATE_TABLE_SQL = "" +  "create table " + TABLE_NAME + "(" +
             "rowid integer primary key autoincrement," +
             CATEGORY_KEY + " string," +
             PRODUCTNAME_KEY + " string," +
             PRICE_KEY + " integer," +
-            REMAININGMONEY_KEY + " integer" +
+            REMAININGMONEY_KEY + " integer," +
+            TIME_KEY + " integer"+
             
 
             ")";
@@ -54,6 +56,7 @@ public class Outgodbhelper extends SQLiteOpenHelper {
         values.put(Outgodbhelper.PRODUCTNAME_KEY,dbContainer.productname);
         values.put(Outgodbhelper.PRICE_KEY,dbContainer.price);
         values.put(Outgodbhelper.REMAININGMONEY_KEY,dbContainer.remainingmoney);
+        values.put(Outgodbhelper.TIME_KEY,dbContainer.time);
         getWritableDatabase().insert(Outgodbhelper.TABLE_NAME,null,values);
 
 
@@ -65,13 +68,14 @@ public class Outgodbhelper extends SQLiteOpenHelper {
         List<DbContainer> list = new ArrayList<>();
 
         //select
-        Cursor cursor = sqLiteDatabase.rawQuery("select * from " + TABLE_NAME,null);
+        Cursor cursor = sqLiteDatabase.rawQuery("select * from " + TABLE_NAME + " ORDER BY " + Outgodbhelper.TIME_KEY +" ASC ",null);
         while(cursor.moveToNext()){
             list.add(new DbContainer(
                     cursor.getString(1),
                     cursor.getString(2),
                     cursor.getInt(3),
-                    cursor.getInt(4)
+                    cursor.getInt(4),
+                    cursor.getLong(5)
             ));
         }
         return list;

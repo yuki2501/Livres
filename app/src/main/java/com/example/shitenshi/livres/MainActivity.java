@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,8 +21,14 @@ import android.widget.TextView;
 import java.util.Collections;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnItemClick;
+
 public class MainActivity extends AppCompatActivity {
+    @BindView(R.id.myListView)
     ListView myListView;
+
 
     DrawerLayout myDrawerLayout;
     public static final int PREFERENCE_INIT = 0;
@@ -32,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         myListView = (ListView)findViewById(R.id.myListView);
+        ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Intent intent1 = getIntent();
@@ -51,6 +59,14 @@ public class MainActivity extends AppCompatActivity {
         drawer.addDrawerListener(toggle);
         toggle.syncState();
     }
+    @OnItemClick(R.id.myListView)
+    public  void onListItemClick(int position){
+
+
+
+    }
+
+
 
     private int getState (){
         int state;
@@ -84,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -91,11 +108,14 @@ public class MainActivity extends AppCompatActivity {
         List<DbContainer> l = outgodbhelper.getContainers();
 
         TextView nokori = (TextView) findViewById(R.id.textView2);
-        nokori.setText(String.valueOf(l.get(l.size()-1).remainingmoney + "円"));
+        if (l.size()>0){
+            nokori.setText(String.valueOf(l.get(l.size()-1).remainingmoney + "円"));
+        }else{
+            nokori.setText("0");
+        }
 
         //adapter prepare
         String[] column = new String[l.size()];
-        Collections.reverse(l);
         String hugou = null;
 
 
@@ -124,4 +144,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+
+
 }
