@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +17,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.Collections;
+import java.io.Serializable;
 import java.util.List;
 
 import butterknife.BindView;
@@ -28,9 +27,10 @@ import butterknife.OnItemClick;
 public class MainActivity extends AppCompatActivity {
     @BindView(R.id.myListView)
     ListView myListView;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
 
 
-    DrawerLayout myDrawerLayout;
     public static final int PREFERENCE_INIT = 0;
     public static final int PREFERENCE_BOOTED  = 1;
 
@@ -38,13 +38,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        myListView = (ListView)findViewById(R.id.myListView);
+        myListView = findViewById(R.id.myListView);
         ButterKnife.bind(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Intent intent1 = getIntent();
         String text1 = intent1.getStringExtra("Data");
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer,toolbar, R.string.app_name, R.string.app_name);
         drawer.addDrawerListener(toggle);
@@ -61,6 +61,12 @@ public class MainActivity extends AppCompatActivity {
     }
     @OnItemClick(R.id.myListView)
     public  void onListItemClick(int position){
+        Intent intent = new Intent(getApplication(), ListInfoActivity.class);
+        Outgodbhelper outgodbhelper = new Outgodbhelper(this);
+        List<DbContainer> list = outgodbhelper.getContainers();
+        DbContainer info =list.get(position);
+        intent.putExtra("DbContainer", (Serializable) info);
+        startActivity(intent);
 
 
 
@@ -84,9 +90,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -98,16 +101,13 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
-
     @Override
     protected void onResume() {
         super.onResume();
         Outgodbhelper outgodbhelper = new Outgodbhelper(this);
         List<DbContainer> l = outgodbhelper.getContainers();
 
-        TextView nokori = (TextView) findViewById(R.id.textView2);
+        TextView nokori = findViewById(R.id.textView2);
         if (l.size()>0){
             nokori.setText(String.valueOf(l.get(l.size()-1).remainingmoney + "円"));
         }else{
@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
             column[i] ="品目： " + l.get(i).productname + "\n" +hugou+ l.get(i).price + "¥" + "\n" + "残金：" + l.get(i).remainingmoney;
         }
 
-        ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, column);
+        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, column);
 
         myListView.setAdapter(adapter);
         if(PREFERENCE_INIT == getState()){

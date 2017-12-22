@@ -19,20 +19,18 @@ public class Outgodbhelper extends SQLiteOpenHelper {
     public static final String PRODUCTNAME_KEY = "productname";
     public static final String PRICE_KEY = "price";
     public static final String REMAININGMONEY_KEY = "remainingmoney";
-    public static final String TIME_KEY = "time";
-    private static final String CREATE_TABLE_SQL = "" +  "create table " + TABLE_NAME + "(" +
+    public static String TIME_KEY = "time";
+    private static final String CREATE_TABLE_SQL = "" + "create table " + TABLE_NAME + "(" +
             "rowid integer primary key autoincrement," +
             CATEGORY_KEY + " string," +
             PRODUCTNAME_KEY + " string," +
             PRICE_KEY + " integer," +
             REMAININGMONEY_KEY + " integer," +
-            TIME_KEY + " integer"+
-            
+            TIME_KEY + " integer" +
+
 
             ")";
     private static final String DROP_TABLE_SQL = "drop table if exists" + TABLE_NAME;
-
-
 
 
     public Outgodbhelper(Context context) {
@@ -49,27 +47,29 @@ public class Outgodbhelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(DROP_TABLE_SQL);
 
     }
+
     //挿入用メソッド
-    public void insertValues(DbContainer dbContainer){
+    public void insertValues(DbContainer dbContainer) {
         ContentValues values = new ContentValues();
-        values.put(Outgodbhelper.CATEGORY_KEY,dbContainer.category);
-        values.put(Outgodbhelper.PRODUCTNAME_KEY,dbContainer.productname);
-        values.put(Outgodbhelper.PRICE_KEY,dbContainer.price);
-        values.put(Outgodbhelper.REMAININGMONEY_KEY,dbContainer.remainingmoney);
-        values.put(Outgodbhelper.TIME_KEY,dbContainer.time);
-        getWritableDatabase().insert(Outgodbhelper.TABLE_NAME,null,values);
+        values.put(Outgodbhelper.CATEGORY_KEY, dbContainer.category);
+        values.put(Outgodbhelper.PRODUCTNAME_KEY, dbContainer.productname);
+        values.put(Outgodbhelper.PRICE_KEY, dbContainer.price);
+        values.put(Outgodbhelper.REMAININGMONEY_KEY, dbContainer.remainingmoney);
+        values.put(Outgodbhelper.TIME_KEY, dbContainer.time);
+        getWritableDatabase().insert(Outgodbhelper.TABLE_NAME, null, values);
 
 
     }
 
-    public List<DbContainer> getContainers(){
+
+    public List<DbContainer> getContainers() {
         //db
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         List<DbContainer> list = new ArrayList<>();
 
         //select
-        Cursor cursor = sqLiteDatabase.rawQuery("select * from " + TABLE_NAME + " ORDER BY " + Outgodbhelper.TIME_KEY +" ASC ",null);
-        while(cursor.moveToNext()){
+        Cursor cursor = sqLiteDatabase.rawQuery("select * from " + TABLE_NAME + " ORDER BY " + Outgodbhelper.TIME_KEY + " ASC ", null);
+        while (cursor.moveToNext()) {
             list.add(new DbContainer(
                     cursor.getString(1),
                     cursor.getString(2),
@@ -80,4 +80,24 @@ public class Outgodbhelper extends SQLiteOpenHelper {
         }
         return list;
     }
+
+    public SQLiteDatabase deleteItem(long time) {
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        sqLiteDatabase.beginTransaction();
+        try {
+            sqLiteDatabase.execSQL("DELETE FROM " + TABLE_NAME + " WHERE " + " time = "+ time );
+            sqLiteDatabase.setTransactionSuccessful();
+        } finally {
+            sqLiteDatabase.endTransaction();
+
+        }
+
+        return sqLiteDatabase;
+
+    }
+
 }
+
+
+
+

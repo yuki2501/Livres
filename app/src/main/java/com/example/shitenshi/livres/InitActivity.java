@@ -10,9 +10,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.Date;
+
 public class InitActivity extends AppCompatActivity {
     private  static  final String PREFS_FILE = "HMPrefs";
     private  static  final String Havemoney = "Havemoney";
+    private  static  final String Inittime = "Inittime";
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -30,10 +33,12 @@ public class InitActivity extends AppCompatActivity {
                 SharedPreferences prefs = getSharedPreferences(PREFS_FILE , Activity.MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putInt("Havemoney", Integer.valueOf(hm.toString()));
+                Date date = new Date();
+                long now = date.getTime();
+                SharedPreferences inittime = getSharedPreferences(Inittime,AddActivity.MODE_PRIVATE);
+                SharedPreferences.Editor editor1 = inittime.edit();
+                editor.putLong("Inittime", now);
                 editor.commit();
-
-
-
                 finish();
             }
         });

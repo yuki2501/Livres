@@ -1,8 +1,7 @@
 package com.example.shitenshi.livres;
 
-import android.preference.PreferenceFragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 public  class  PreferenceActivity extends AppCompatActivity implements PrefsFragment.OnFragmentInteractionListener {
 
