@@ -5,8 +5,6 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Environment;
@@ -14,7 +12,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
-import android.text.SpannableStringBuilder;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -29,7 +27,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -41,7 +38,6 @@ import butterknife.OnItemSelected;
 import static android.widget.Toast.LENGTH_LONG;
 import static com.example.shitenshi.livres.Outgodbhelper.REMAININGMONEY_KEY;
 import static com.example.shitenshi.livres.Outgodbhelper.TABLE_NAME;
-import static com.example.shitenshi.livres.Outgodbhelper.TIME_KEY;
 
 
 public class AddActivity extends AppCompatActivity {
@@ -54,9 +50,7 @@ public class AddActivity extends AppCompatActivity {
     private static final String PREFS_FILE = "HMPrefs";
     private static final String Havemoney = "Havemoney";
     private static final String Inittime = "Inittime";
-    Date date = new Date();
-    long now = date.getTime();
-    static long time = -1;
+    static long time ;
 
 
 
@@ -86,20 +80,18 @@ public class AddActivity extends AppCompatActivity {
                 if (position == 0) {
                     Integer havemoney = prefs.getInt(Havemoney, 0);
                     Integer remainingmoney = 0;
-                    SQLiteDatabase sqLiteDatabase = null;
                     Outgodbhelper outgodbhelper = new Outgodbhelper(AddActivity.this);
                     List<DbContainer> l = outgodbhelper.getContainers();
                     Integer zandaka ;
                     if (l.size()==0){
-                        String nedan = price.toString();
-                        nedan = category == "income" ? "+" + nedan : "-"+nedan;
+                        String nedan = (Objects.equals(category, "income") ? "+":"-") + price ;
                         remainingmoney = havemoney - Integer.valueOf(nedan);
                         outgodbhelper.insertValues(new DbContainer(
                                 spinner.getSelectedItem().toString(),
                                 productname.toString(),
                                 Integer.valueOf(price.toString()),
                                 remainingmoney,
-                                (time == -1) ? new Date().getTime() : time
+                                new Date().getTime()
                         ));
 
 
@@ -110,7 +102,7 @@ public class AddActivity extends AppCompatActivity {
                                 productname.toString(),
                                 Integer.valueOf(price.toString()),
                                 remainingmoney,
-                                (time == -1) ? new Date().getTime() : time
+                                new Date().getTime()
 
 
                         ));
@@ -120,11 +112,6 @@ public class AddActivity extends AppCompatActivity {
                             int nowmoney = l1.get(i-1).remainingmoney ;
                             SQLiteDatabase sqLiteDatabase1 = new Outgodbhelper(AddActivity.this).getWritableDatabase();
                             int j = i+1;
-
-
-
-
-
                             if (Objects.equals(l1.get(i).category, "income")) {
                                 zandaka = nowmoney + l1.get(i).price;
                                 sqLiteDatabase1.execSQL("UPDATE " + TABLE_NAME + " SET " + REMAININGMONEY_KEY + "=" + zandaka.toString() + " WHERE " + " rowid = " + j + ";");
@@ -186,9 +173,8 @@ public class AddActivity extends AppCompatActivity {
                     }
                     finish();
                 } else {
-                    Long innittime = inittime.getLong(Inittime,0);
-                    AddActivity.DatePickerDialogFragment datePickerDialogFragment1 = new AddActivity.DatePickerDialogFragment();
-                    if (Long.valueOf(innittime) >= datePickerDialogFragment1.gettime()) {
+                    long innittime = inittime.getLong(Inittime,0);
+                    if (innittime >= time) {
 
                         Toast.makeText(AddActivity.this,"日付が古すぎます。",LENGTH_LONG).show();
                     } else {
@@ -208,7 +194,7 @@ public class AddActivity extends AppCompatActivity {
                                     productname.toString(),
                                     Integer.valueOf(price.toString()),
                                     remainingmoney,
-                                    (time == -1) ? new Date().getTime() : time
+                                    time
                             ));
                         }
                         else{
@@ -217,7 +203,7 @@ public class AddActivity extends AppCompatActivity {
                                     productname.toString(),
                                     Integer.valueOf(price.toString()),
                                     remainingmoney,
-                                    (time == -1) ? new Date().getTime() : time
+                                    time
 
 
                             ));
@@ -311,6 +297,7 @@ public class AddActivity extends AppCompatActivity {
             @OnItemSelected(R.id.spinner2)
             public void onItemSelectedHogeSpinner(Spinner spinner) {
 
+
                 // リストの何番目が選択されたか
                 int position = spinner.getSelectedItemPosition();
                 // 選択されたアイテム名
@@ -326,8 +313,6 @@ public class AddActivity extends AppCompatActivity {
             }
 
             public static class DatePickerDialogFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
-
-                long time = 1000000000;
                 @Override
                 public Dialog onCreateDialog(Bundle savedInstanceState) {
                     Calendar calendar = Calendar.getInstance();
@@ -346,39 +331,45 @@ public class AddActivity extends AppCompatActivity {
                     int hour = c.get(Calendar.HOUR_OF_DAY);
                     int minute = c.get(Calendar.MINUTE);
 
+
                     TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
 
 
                         @Override
                         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-
                             SimpleDateFormat format = new SimpleDateFormat();
                             format.applyPattern("yyyy/MM/dd/HH:mm");
+
+
                             try {
-
-                                Date d = format.parse(String.valueOf(year) + "/" + String.valueOf(month) + "/" + String.valueOf(day) + "/" + String.valueOf(hourOfDay) + ":" + String.valueOf(minute));
-                                time = d.getTime() / 1000;
-
-
-
+                                String aaa = String.valueOf(year) + "/" + String.valueOf(month + 1) + "/" + String.valueOf(day) + "/" + String.valueOf(hourOfDay) + ":" + String.valueOf(minute);
+                                Date d = format.parse(aaa);
+                                Log.d("HinataYukari",aaa);
+                                AddActivity.time = d.getTime();
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
 
 
+
                         }
 
+                    },hour, minute, true);
 
-                    }, hour, minute, true);
+
                     timePickerDialog.show();
 
                 }
-                public long gettime(){
-                    return this.time;
-                }
+
+
+
+
+
 
 
             }
+
+
 
 
 

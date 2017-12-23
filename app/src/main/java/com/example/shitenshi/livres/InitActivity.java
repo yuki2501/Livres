@@ -2,9 +2,9 @@ package com.example.shitenshi.livres;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.Editable;
 import android.view.View;
 import android.widget.Button;
@@ -37,8 +37,11 @@ public class InitActivity extends AppCompatActivity {
                 long now = date.getTime();
                 SharedPreferences inittime = getSharedPreferences(Inittime,AddActivity.MODE_PRIVATE);
                 SharedPreferences.Editor editor1 = inittime.edit();
-                editor.putLong("Inittime", now);
+                editor1.putLong("Inittime", now);
+                editor.apply();
+                editor1.apply();
                 editor.commit();
+                editor1.commit();
                 finish();
             }
         });
@@ -47,7 +50,7 @@ public class InitActivity extends AppCompatActivity {
     }
     private void setState (int state){
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        sp.edit().putInt("InitState",state).commit();
+        sp.edit().putInt("InitState",state).apply();
     }
 
 
