@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.ButterKnife;
 import butterknife.OnItemSelected;
@@ -46,7 +47,9 @@ import static com.example.shitenshi.livres.Outgodbhelper.TIME_KEY;
 public class AddActivity extends AppCompatActivity {
 
     private static final int MAIN_ACTIVITY = 101;
-    Outgodbhelper outgodbhelper;
+    Outgodbhelper outgodbhelper = new Outgodbhelper(this);
+
+
     DatePickerDialogFragment datePickerDialogFragment;
     private static final String PREFS_FILE = "HMPrefs";
     private static final String Havemoney = "Havemoney";
@@ -54,7 +57,7 @@ public class AddActivity extends AppCompatActivity {
     Date date = new Date();
     long now = date.getTime();
     static long time = -1;
-    SQLiteDatabase sqLiteDatabase;
+
 
 
     @Override
@@ -86,7 +89,7 @@ public class AddActivity extends AppCompatActivity {
                     SQLiteDatabase sqLiteDatabase = null;
                     Outgodbhelper outgodbhelper = new Outgodbhelper(AddActivity.this);
                     List<DbContainer> l = outgodbhelper.getContainers();
-                    Integer zandaka =0;
+                    Integer zandaka ;
                     if (l.size()==0){
                         String nedan = price.toString();
                         nedan = category == "income" ? "+" + nedan : "-"+nedan;
@@ -101,6 +104,7 @@ public class AddActivity extends AppCompatActivity {
 
 
                     }else {
+
                         outgodbhelper.insertValues(new DbContainer(
                                 spinner.getSelectedItem().toString(),
                                 productname.toString(),
@@ -110,23 +114,27 @@ public class AddActivity extends AppCompatActivity {
 
 
                         ));
-                        for (int i = 1; i <= l.size() - 2; i++) {
-                            int nowmoney = l.get(i-1).remainingmoney ;
+                        List<DbContainer> l1 = outgodbhelper.getContainers();
+                        for (int i = 1; i <= l1.size() -1  ; i++) {
+
+                            int nowmoney = l1.get(i-1).remainingmoney ;
+                            SQLiteDatabase sqLiteDatabase1 = new Outgodbhelper(AddActivity.this).getWritableDatabase();
+                            int j = i+1;
 
 
-                            if (l.get(i).category == "income") {
-                                zandaka = nowmoney + l.get(i).price;
-                                sqLiteDatabase.execSQL("UPDATE " + TABLE_NAME + " SET " + REMAININGMONEY_KEY + "=" + zandaka.toString() + " WHERE " +" TIME_KEY = " + l.get(i).time);
+
+
+
+                            if (Objects.equals(l1.get(i).category, "income")) {
+                                zandaka = nowmoney + l1.get(i).price;
+                                sqLiteDatabase1.execSQL("UPDATE " + TABLE_NAME + " SET " + REMAININGMONEY_KEY + "=" + zandaka.toString() + " WHERE " + " rowid = " + j + ";");
+
+                            }else if (Objects.equals(l1.get(i).category, "outgo")) {
+                                zandaka = nowmoney - l1.get(i).price;
+                                sqLiteDatabase1.execSQL("UPDATE " + TABLE_NAME + " SET " + REMAININGMONEY_KEY + "=" + zandaka.toString() + " WHERE " +" rowid = " + j + ";");
+
 
                             }
-                            if (l.get(i).category == "outgo") {
-                                zandaka = nowmoney - l.get(i).price;
-                                sqLiteDatabase.execSQL("UPDATE " + TABLE_NAME + " SET " + REMAININGMONEY_KEY + "=" + zandaka.toString() + " WHERE " +" TIME_KEY = " + l.get(i).time);
-
-                            }
-
-
-
                         }
                     }
 
@@ -215,24 +223,28 @@ public class AddActivity extends AppCompatActivity {
                             ));
 
 
-                        for (int i = 1; i <= l.size()-1; i++) {
-                            int nowmoney = l.get(i-1).remainingmoney;
+                            List<DbContainer> l1 = outgodbhelper.getContainers();
+                            for (int i = 1; i <= l1.size() -1  ; i++) {
 
-                            if (l.get(i).category == "income") {
-                                zandaka = nowmoney + l.get(i).price;
-                                sqLiteDatabase.execSQL("UPDATE " + TABLE_NAME + " SET " + REMAININGMONEY_KEY + " = " + zandaka.toString() + " WHERE " + " TIME_KEY =" + l.get(i).time + ";");
+                                int nowmoney = l1.get(i-1).remainingmoney ;
+                                SQLiteDatabase sqLiteDatabase1 = new Outgodbhelper(AddActivity.this).getWritableDatabase();
+                                int j = i+1;
 
+
+
+
+
+                                if (Objects.equals(l1.get(i).category, "income")) {
+                                    zandaka = nowmoney + l1.get(i).price;
+                                    sqLiteDatabase1.execSQL("UPDATE " + TABLE_NAME + " SET " + REMAININGMONEY_KEY + "=" + zandaka.toString() + " WHERE " + " rowid = " + j + ";");
+
+                                }else if (Objects.equals(l1.get(i).category, "outgo")) {
+                                    zandaka = nowmoney - l1.get(i).price;
+                                    sqLiteDatabase1.execSQL("UPDATE " + TABLE_NAME + " SET " + REMAININGMONEY_KEY + "=" + zandaka.toString() + " WHERE " +" rowid = " + j + ";");
+
+
+                                }
                             }
-                            if (l.get(i).category == "outgo") {
-                                zandaka = nowmoney - l.get(i).price;
-                                sqLiteDatabase.execSQL("UPDATE " + TABLE_NAME + " SET " + REMAININGMONEY_KEY + " = " + zandaka.toString() + " WHERE " + " TIME_KEY = " + l.get(i).time + ";");
-
-                            }
-
-
-
-
-                        }
                         }
 
 
