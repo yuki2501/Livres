@@ -35,7 +35,7 @@ public class InitActivity extends AppCompatActivity {
                 editor.putInt("Havemoney", Integer.valueOf(hm.toString()));
                 Date date = new Date();
                 long now = date.getTime();
-                SharedPreferences inittime = getSharedPreferences(Inittime,AddActivity.MODE_PRIVATE);
+                SharedPreferences inittime = getSharedPreferences(Inittime,Activity.MODE_PRIVATE);
                 SharedPreferences.Editor editor1 = inittime.edit();
                 editor1.putLong("Inittime", now);
                 editor.apply();

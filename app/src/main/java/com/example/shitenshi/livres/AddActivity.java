@@ -5,14 +5,12 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -36,8 +34,6 @@ import butterknife.ButterKnife;
 import butterknife.OnItemSelected;
 
 import static android.widget.Toast.LENGTH_LONG;
-import static com.example.shitenshi.livres.Outgodbhelper.REMAININGMONEY_KEY;
-import static com.example.shitenshi.livres.Outgodbhelper.TABLE_NAME;
 
 
 public class AddActivity extends AppCompatActivity {
@@ -50,8 +46,7 @@ public class AddActivity extends AppCompatActivity {
     private static final String PREFS_FILE = "HMPrefs";
     private static final String Havemoney = "Havemoney";
     private static final String Inittime = "Inittime";
-    static long time ;
-
+    static long time;
 
 
     @Override
@@ -81,11 +76,11 @@ public class AddActivity extends AppCompatActivity {
                     Integer havemoney = prefs.getInt(Havemoney, 0);
                     Integer remainingmoney = 0;
                     Outgodbhelper outgodbhelper = new Outgodbhelper(AddActivity.this);
-                    List<DbContainer> l = outgodbhelper.getContainers();
-                    Integer zandaka ;
-                    if (l.size()==0){
-                        String nedan = (Objects.equals(category, "income") ? "+":"-") + price ;
-                        remainingmoney = havemoney - Integer.valueOf(nedan);
+                    List<DbContainer> l = outgodbhelper.getContainers(havemoney);
+                    Integer zandaka;
+                    if (l.size() == 0) {
+                        String nedan = (Objects.equals(category, "income") ? "+" : "-") + price;
+                        remainingmoney = havemoney + Integer.valueOf(nedan);
                         outgodbhelper.insertValues(new DbContainer(
                                 spinner.getSelectedItem().toString(),
                                 productname.toString(),
@@ -95,7 +90,7 @@ public class AddActivity extends AppCompatActivity {
                         ));
 
 
-                    }else {
+                    } else {
 
                         outgodbhelper.insertValues(new DbContainer(
                                 spinner.getSelectedItem().toString(),
@@ -103,36 +98,16 @@ public class AddActivity extends AppCompatActivity {
                                 Integer.valueOf(price.toString()),
                                 remainingmoney,
                                 new Date().getTime()
-
-
                         ));
-                        List<DbContainer> l1 = outgodbhelper.getContainers();
-                        for (int i = 1; i <= l1.size() -1  ; i++) {
-
-                            int nowmoney = l1.get(i-1).remainingmoney ;
-                            SQLiteDatabase sqLiteDatabase1 = new Outgodbhelper(AddActivity.this).getWritableDatabase();
-                            int j = i+1;
-                            if (Objects.equals(l1.get(i).category, "income")) {
-                                zandaka = nowmoney + l1.get(i).price;
-                                sqLiteDatabase1.execSQL("UPDATE " + TABLE_NAME + " SET " + REMAININGMONEY_KEY + "=" + zandaka.toString() + " WHERE " + " rowid = " + j + ";");
-
-                            }else if (Objects.equals(l1.get(i).category, "outgo")) {
-                                zandaka = nowmoney - l1.get(i).price;
-                                sqLiteDatabase1.execSQL("UPDATE " + TABLE_NAME + " SET " + REMAININGMONEY_KEY + "=" + zandaka.toString() + " WHERE " +" rowid = " + j + ";");
-
-
-                            }
-                        }
+                        outgodbhelper.replacedb(havemoney);
                     }
-
-
 
 
                     Boolean toggleswitch = PreferenceManager.getDefaultSharedPreferences(AddActivity.this).getBoolean("switch_preference", false);
                     if (toggleswitch == Boolean.TRUE) {
                         StringBuilder stringBuilder = new StringBuilder();
                         String[] column = new String[l.size()];
-                        for (int i = 0; i < l.size()-1; i++) {
+                        for (int i = 0; i < l.size() - 1; i++) {
                             if (i == 0) {
                                 stringBuilder.append("category,product,price,remainingmoney\n");
                             } else {
@@ -173,22 +148,22 @@ public class AddActivity extends AppCompatActivity {
                     }
                     finish();
                 } else {
-                    long innittime = inittime.getLong(Inittime,0);
+                    long innittime = inittime.getLong(Inittime, 0);
                     if (innittime >= time) {
 
-                        Toast.makeText(AddActivity.this,"日付が古すぎます。",LENGTH_LONG).show();
+                        Toast.makeText(AddActivity.this, "日付が古すぎます。", LENGTH_LONG).show();
                     } else {
 
                         Integer havemoney = prefs.getInt(Havemoney, 0);
                         Integer remainingmoney = 0;
+                        ;
                         Outgodbhelper outgodbhelper = new Outgodbhelper(AddActivity.this);
-                        List<DbContainer> l = outgodbhelper.getContainers();
+                        List<DbContainer> l = outgodbhelper.getContainers(havemoney);
 
-                        Integer zandaka = 0;
-                        if (l.size()==0){
-                            String nedan = price.toString();
-                            nedan = category == "income" ? "+" + nedan : "-"+nedan;
-                            remainingmoney = havemoney - Integer.valueOf(nedan);
+                        Integer zandaka;
+                        if (l.size() == 0) {
+                            String nedan = (Objects.equals(category, "income") ? "+" : "-") + price;
+                            remainingmoney = havemoney + Integer.valueOf(nedan);
                             outgodbhelper.insertValues(new DbContainer(
                                     spinner.getSelectedItem().toString(),
                                     productname.toString(),
@@ -196,44 +171,16 @@ public class AddActivity extends AppCompatActivity {
                                     remainingmoney,
                                     time
                             ));
-                        }
-                        else{
+                        } else {
                             outgodbhelper.insertValues(new DbContainer(
                                     spinner.getSelectedItem().toString(),
                                     productname.toString(),
                                     Integer.valueOf(price.toString()),
                                     remainingmoney,
                                     time
-
-
                             ));
-
-
-                            List<DbContainer> l1 = outgodbhelper.getContainers();
-                            for (int i = 1; i <= l1.size() -1  ; i++) {
-
-                                int nowmoney = l1.get(i-1).remainingmoney ;
-                                SQLiteDatabase sqLiteDatabase1 = new Outgodbhelper(AddActivity.this).getWritableDatabase();
-                                int j = i+1;
-
-
-
-
-
-                                if (Objects.equals(l1.get(i).category, "income")) {
-                                    zandaka = nowmoney + l1.get(i).price;
-                                    sqLiteDatabase1.execSQL("UPDATE " + TABLE_NAME + " SET " + REMAININGMONEY_KEY + "=" + zandaka.toString() + " WHERE " + " rowid = " + j + ";");
-
-                                }else if (Objects.equals(l1.get(i).category, "outgo")) {
-                                    zandaka = nowmoney - l1.get(i).price;
-                                    sqLiteDatabase1.execSQL("UPDATE " + TABLE_NAME + " SET " + REMAININGMONEY_KEY + "=" + zandaka.toString() + " WHERE " +" rowid = " + j + ";");
-
-
-                                }
-                            }
+                            outgodbhelper.replacedb(havemoney);
                         }
-
-
 
 
                         Boolean toggleswitch = PreferenceManager.getDefaultSharedPreferences(AddActivity.this).getBoolean("switch_preference", false);
@@ -257,8 +204,6 @@ public class AddActivity extends AppCompatActivity {
                             } catch (FileNotFoundException e) {
                                 try {
                                     new ProcessBuilder("mkdir", "/sdcard/Livres").start();
-
-
                                 } catch (IOException ignored) {
                                 }
                                 try {
@@ -287,92 +232,63 @@ public class AddActivity extends AppCompatActivity {
     }
 
 
-            public File getCSVDir(String CSV) {
-                // Get the directory for the user's public pictures directory.
-                File file = new File(Environment.getExternalStoragePublicDirectory(
-                        "Livres"), CSV);
-                return file;
-            }
+    public File getCSVDir(String CSV) {
+        // Get the directory for the user's public pictures directory.
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+                "Livres"), CSV);
+        return file;
+    }
 
-            @OnItemSelected(R.id.spinner2)
-            public void onItemSelectedHogeSpinner(Spinner spinner) {
-
-
-                // リストの何番目が選択されたか
-                int position = spinner.getSelectedItemPosition();
-                // 選択されたアイテム名
-                String item = (String) spinner.getSelectedItem();
-                if (position == 1) {
-                    DatePickerDialogFragment datePicker = new DatePickerDialogFragment();
-                    datePicker.show(getSupportFragmentManager(), "datePicker");
-
-
-
-                }
-
-            }
-
-            public static class DatePickerDialogFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
-                @Override
-                public Dialog onCreateDialog(Bundle savedInstanceState) {
-                    Calendar calendar = Calendar.getInstance();
-                    int year = calendar.get(Calendar.YEAR);
-                    int month = calendar.get(Calendar.MONTH);
-                    int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), this, year, month, dayOfMonth);
-
-                    return datePickerDialog;
-                }
-
-
-                public void onDateSet(DatePicker view, final int year, final int month, final int day) {
-                    final Calendar c = Calendar.getInstance();
-                    int hour = c.get(Calendar.HOUR_OF_DAY);
-                    int minute = c.get(Calendar.MINUTE);
-
-
-                    TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
-
-
-                        @Override
-                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                            SimpleDateFormat format = new SimpleDateFormat();
-                            format.applyPattern("yyyy/MM/dd/HH:mm");
-
-
-                            try {
-                                String aaa = String.valueOf(year) + "/" + String.valueOf(month + 1) + "/" + String.valueOf(day) + "/" + String.valueOf(hourOfDay) + ":" + String.valueOf(minute);
-                                Date d = format.parse(aaa);
-                                Log.d("HinataYukari",aaa);
-                                AddActivity.time = d.getTime();
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-
-
-
-                        }
-
-                    },hour, minute, true);
-
-
-                    timePickerDialog.show();
-
-                }
-
-
-
-
-
-
-
-            }
-
-
-
-
-
+    @OnItemSelected(R.id.spinner2)
+    public void onItemSelectedHogeSpinner(Spinner spinner) {
+        // リストの何番目が選択されたか
+        int position = spinner.getSelectedItemPosition();
+        // 選択されたアイテム名
+        String item = (String) spinner.getSelectedItem();
+        if (position == 1) {
+            DatePickerDialogFragment datePicker = new DatePickerDialogFragment();
+            datePicker.show(getSupportFragmentManager(), "datePicker");
+        }
 
     }
+
+    public static class DatePickerDialogFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+            DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), this, year, month, dayOfMonth);
+            return datePickerDialog;
+        }
+
+        public void onDateSet(DatePicker view, final int year, final int month, final int day) {
+            final Calendar c = Calendar.getInstance();
+            int hour = c.get(Calendar.HOUR_OF_DAY);
+            int minute = c.get(Calendar.MINUTE);
+
+
+            TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
+
+
+                @Override
+                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    SimpleDateFormat format = new SimpleDateFormat();
+                    format.applyPattern("yyyy/MM/dd/HH:mm");
+
+
+                    try {
+                        String aaa = String.valueOf(year) + "/" + String.valueOf(month + 1) + "/" + String.valueOf(day) + "/" + String.valueOf(hourOfDay) + ":" + String.valueOf(minute);
+                        Date d = format.parse(aaa);
+                        AddActivity.time = d.getTime();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, hour, minute, true);
+            timePickerDialog.show();
+        }
+    }
+}
 

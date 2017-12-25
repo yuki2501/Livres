@@ -1,5 +1,6 @@
 package com.example.shitenshi.livres;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -33,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
 
     public static final int PREFERENCE_INIT = 0;
     public static final int PREFERENCE_BOOTED  = 1;
+    private static final String PREFS_FILE = "HMPrefs";
+    private static final String Havemoney = "Havemoney";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +65,12 @@ public class MainActivity extends AppCompatActivity {
     }
     @OnItemClick(R.id.myListView)
     public  void onListItemClick(int position){
+        SharedPreferences prefs = getSharedPreferences(PREFS_FILE, Activity.MODE_PRIVATE);
+        int havemoney = prefs.getInt(Havemoney,0);
+
         Intent intent = new Intent(getApplication(), ListInfoActivity.class);
         Outgodbhelper outgodbhelper = new Outgodbhelper(this);
-        List<DbContainer> list = outgodbhelper.getContainers();
+        List<DbContainer> list = outgodbhelper.getContainers(havemoney);
         DbContainer info =list.get(position);
         intent.putExtra("DbContainer", (Serializable) info);
         startActivity(intent);
@@ -104,8 +111,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        SharedPreferences prefs = getSharedPreferences(PREFS_FILE, Activity.MODE_PRIVATE);
+        int havemoney = prefs.getInt(Havemoney,0);
         Outgodbhelper outgodbhelper = new Outgodbhelper(this);
-        List<DbContainer> l = outgodbhelper.getContainers();
+        List<DbContainer> l = outgodbhelper.getContainers(havemoney);
 
         TextView nokori = findViewById(R.id.textView2);
         if (l.size()>0){

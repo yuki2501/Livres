@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by shitenshi on 17/10/24.
@@ -20,6 +21,8 @@ public class Outgodbhelper extends SQLiteOpenHelper {
     public static final String PRICE_KEY = "price";
     public static final String REMAININGMONEY_KEY = "remainingmoney";
     public static String TIME_KEY = "time";
+    private static final String PREFS_FILE = "HMPrefs";
+    private static final String Havemoney = "Havemoney";
     private static final String CREATE_TABLE_SQL = "" + "create table " + TABLE_NAME + "(" +
             "rowid integer primary key autoincrement," +
             CATEGORY_KEY + " string," +
@@ -62,26 +65,41 @@ public class Outgodbhelper extends SQLiteOpenHelper {
     }
 
 
-    public List<DbContainer> getContainers() {
+    public List<DbContainer> getContainers(int havemoney) {
         //db
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         List<DbContainer> list = new ArrayList<>();
 
         //select
+        Integer i = 0;
         Cursor cursor = sqLiteDatabase.rawQuery("select * from " + TABLE_NAME + " ORDER BY " + Outgodbhelper.TIME_KEY + " ASC ", null);
         while (cursor.moveToNext()) {
+            Integer remainingmoney;
+            if(cursor.getPosition()==0){
+                String nedan = (Objects.equals(cursor.getString(1), "income") ? "+" : "-")+cursor.getInt(3);
+                remainingmoney = havemoney + Integer.valueOf(nedan);
+            }else{
+                String nedan = (Objects.equals(cursor.getString(1), "income") ? "+" : "-")+cursor.getInt(3);
+                remainingmoney=  Integer.valueOf(nedan) - list.get(i-1).remainingmoney;
+            }
+
             list.add(new DbContainer(
                     cursor.getString(1),
                     cursor.getString(2),
                     cursor.getInt(3),
-                    cursor.getInt(4),
+                    remainingmoney,
                     cursor.getLong(5)
             ));
+            i++;
+
+
         }
+
         return list;
+
     }
 
-    public SQLiteDatabase deleteItem(long time) {
+    public void deleteItem(long time) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         sqLiteDatabase.beginTransaction();
         try {
@@ -92,9 +110,27 @@ public class Outgodbhelper extends SQLiteOpenHelper {
 
         }
 
-        return sqLiteDatabase;
+
 
     }
+
+    public void replacedb(int havemoney) {
+        List<DbContainer> l1 = getContainers(havemoney);
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        sqLiteDatabase.beginTransaction();
+        try {
+            sqLiteDatabase.execSQL("DELETE FROM " + TABLE_NAME );
+            for (int i = 0; i < l1.size(); i++) {
+                insertValues(new DbContainer(l1.get(i).category, l1.get(i).productname, l1.get(i).price, l1.get(i).remainingmoney, l1.get(i).time));
+            }
+            sqLiteDatabase.setTransactionSuccessful();
+        }finally{
+            sqLiteDatabase.endTransaction();
+        }
+    }
+
+
+
 
 }
 
