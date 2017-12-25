@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -139,8 +140,20 @@ public class MainActivity extends AppCompatActivity {
                 hugou = "-";
 
             }
+            Boolean toggleswitch = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).getBoolean("switch_preference_1", false);
+            if(!toggleswitch){
+                column[i] ="品目： " + l.get(i).productname + "\n" +hugou+ l.get(i).price + "¥" + "\n" + "残金：" + l.get(i).remainingmoney;
+            }else{long time = l.get(i).time;
+                Date data = new Date(time);
+                String listdata = data.toString();
+                String [] spdata = listdata.split(" ",0);
+                Date d = null;
+                String viewdata = spdata[5] +" "+ spdata[1]+" "+spdata[2]+" "+spdata[0]+" "+spdata[3];
 
-            column[i] ="品目： " + l.get(i).productname + "\n" +hugou+ l.get(i).price + "¥" + "\n" + "残金：" + l.get(i).remainingmoney;
+
+
+                column[i] ="品目： " + l.get(i).productname + "\n" +hugou+ l.get(i).price + "¥" + "\n" + "残金：" + l.get(i).remainingmoney + "\n" + viewdata;
+            }
         }
 
         ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, column);
@@ -149,11 +162,6 @@ public class MainActivity extends AppCompatActivity {
         if(PREFERENCE_INIT == getState()){
             Intent intent1 = new Intent(MainActivity.this, InitActivity.class);
             startActivity(intent1);
-
         }
-
     }
-
-
-
 }

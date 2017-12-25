@@ -1,5 +1,6 @@
 package com.example.shitenshi.livres;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -274,7 +275,7 @@ public class AddActivity extends AppCompatActivity {
 
                 @Override
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    SimpleDateFormat format = new SimpleDateFormat();
+                    @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat();
                     format.applyPattern("yyyy/MM/dd/HH:mm");
 
 
