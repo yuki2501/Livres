@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="Add list"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/shortcut_short_label1"
+        android:shortcutLongLabel="@string/shortcut_long_label1"
+        android:shortcutDisabledMessage="@string/shortcut_disable_label1">
+
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.example.shitenshi.livres"
+            android:targetClass="com.example.shitenshi.livres.AddActivity" />
+
+        <categories android:name="android.shortcut.conversation" />
+
+    </shortcut>
+
+</shortcuts>

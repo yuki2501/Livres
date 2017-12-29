@@ -4,6 +4,9 @@
     <string name="item_delete">Delete</string>
     <string name="title_activity_add">cardadd</string>
     <string name="textview">TextView</string>
+    <string name="shortcut_short_label1">Add card</string>
+    <string name="shortcut_long_label1">Add card</string>
+    <string name="shortcut_disable_label1">Disable add card</string>
     <string-array name="list">
         <item>income</item>
         <item>outgo</item>
