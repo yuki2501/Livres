@@ -1,5 +1,6 @@
 package com.example.shitenshi.livres;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -109,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onResume() {
         super.onResume();
@@ -121,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         if (l.size()>0){
             nokori.setText(String.valueOf(l.get(l.size()-1).remainingmoney + "円"));
         }else{
-            nokori.setText("0");
+           nokori.setText(String.valueOf(havemoney) + "円");
         }
 
         //adapter prepare
