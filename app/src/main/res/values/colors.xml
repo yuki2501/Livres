@@ -3,4 +3,12 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary_akari">#EC407A</color>
+    <color name="colorPrimaryDark_akari">#C2185B</color>
+    <color name="colorAccent_akari">#29B6F6</color>
+    <color name="colorPrimary_kaeru">#64DD17</color>
+    <color name="colorPrimaryDark_kaeru">#388E3C</color>
+    <color name="colorAccent_kaeru">#AB47BC</color>
+
+
 </resources>

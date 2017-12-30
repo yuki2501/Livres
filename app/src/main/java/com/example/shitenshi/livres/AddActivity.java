@@ -50,8 +50,10 @@ public class AddActivity extends AppCompatActivity {
     static long time;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addcard);
         outgodbhelper = new Outgodbhelper(this);
@@ -89,8 +91,6 @@ public class AddActivity extends AppCompatActivity {
                                 remainingmoney,
                                 new Date().getTime()
                         ));
-
-
                     } else {
 
                         outgodbhelper.insertValues(new DbContainer(
@@ -102,51 +102,7 @@ public class AddActivity extends AppCompatActivity {
                         ));
                         outgodbhelper.replacedb(havemoney);
                     }
-
-
-                    Boolean toggleswitch = PreferenceManager.getDefaultSharedPreferences(AddActivity.this).getBoolean("switch_preference", false);
-                    if (toggleswitch == Boolean.TRUE) {
-                        StringBuilder stringBuilder = new StringBuilder();
-                        String[] column = new String[l.size()];
-                        for (int i = 0; i < l.size() - 1; i++) {
-                            if (i == 0) {
-                                stringBuilder.append("category,product,price,remainingmoney\n");
-                            } else {
-                                column[i] = l.get(i).category + "," + l.get(i).productname + "," + l.get(i).price + "," + l.get(i).remainingmoney + "\n";
-                                stringBuilder.append(column[i]);
-                            }
-                        }
-                        try {
-                            File file = getCSVDir("csv.csv");
-                            FileWriter fileWriter = new FileWriter(file);
-                            fileWriter.write(stringBuilder.toString());
-                            fileWriter.flush();
-                            fileWriter.close();
-                        } catch (FileNotFoundException e) {
-                            try {
-                                new ProcessBuilder("mkdir", "/sdcard/Livres").start();
-
-
-                            } catch (IOException ignored) {
-                            }
-                            try {
-                                new ProcessBuilder("touch", "/sdcard/Livres/csv.csv").start();
-                            } catch (IOException ignored) {
-                            }
-                            File file = getCSVDir("csv.csv");
-                            FileWriter fileWriter = null;
-                            try {
-                                fileWriter = new FileWriter(file);
-                                fileWriter.write(stringBuilder.toString());
-                                fileWriter.flush();
-                                fileWriter.close();
-                            } catch (IOException e1) {
-                                e1.printStackTrace();
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    csvoutput();
                     finish();
                 } else {
                     long innittime = inittime.getLong(Inittime, 0);
@@ -182,49 +138,7 @@ public class AddActivity extends AppCompatActivity {
                             ));
                             outgodbhelper.replacedb(havemoney);
                         }
-
-
-                        Boolean toggleswitch = PreferenceManager.getDefaultSharedPreferences(AddActivity.this).getBoolean("switch_preference", false);
-                        if (toggleswitch == Boolean.TRUE) {
-                            StringBuilder stringBuilder = new StringBuilder();
-                            String[] column = new String[l.size()];
-                            for (int i = 0; i < l.size(); i++) {
-                                if (i == 0) {
-                                    stringBuilder.append("category,product,price,remainingmoney\n");
-                                } else {
-                                    column[i] = l.get(i).category + "," + l.get(i).productname + "," + l.get(i).price + "," + l.get(i).remainingmoney + "\n";
-                                    stringBuilder.append(column[i]);
-                                }
-                            }
-                            try {
-                                File file = getCSVDir("csv.csv");
-                                FileWriter fileWriter = new FileWriter(file);
-                                fileWriter.write(stringBuilder.toString());
-                                fileWriter.flush();
-                                fileWriter.close();
-                            } catch (FileNotFoundException e) {
-                                try {
-                                    new ProcessBuilder("mkdir", "/sdcard/Livres").start();
-                                } catch (IOException ignored) {
-                                }
-                                try {
-                                    new ProcessBuilder("touch", "/sdcard/Livres/csv.csv").start();
-                                } catch (IOException ignored) {
-                                }
-                                File file = getCSVDir("csv.csv");
-                                FileWriter fileWriter = null;
-                                try {
-                                    fileWriter = new FileWriter(file);
-                                    fileWriter.write(stringBuilder.toString());
-                                    fileWriter.flush();
-                                    fileWriter.close();
-                                } catch (IOException e1) {
-                                    e1.printStackTrace();
-                                }
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
+                        csvoutput();
                         finish();
                     }
                 }
@@ -232,13 +146,57 @@ public class AddActivity extends AppCompatActivity {
         });
     }
 
-
     public File getCSVDir(String CSV) {
         // Get the directory for the user's public pictures directory.
         File file = new File(Environment.getExternalStoragePublicDirectory(
                 "Livres"), CSV);
         return file;
     }
+    public void csvoutput(){
+        SharedPreferences prefs = getSharedPreferences(PREFS_FILE, Activity.MODE_PRIVATE);
+        Boolean toggleswitch = PreferenceManager.getDefaultSharedPreferences(AddActivity.this).getBoolean("switch_preference", false);
+        if (toggleswitch == Boolean.TRUE) {
+            int havemoney = prefs.getInt(Havemoney,0);
+            StringBuilder stringBuilder = new StringBuilder();
+            List<DbContainer> l = outgodbhelper.getContainers(havemoney);
+            String[] column = new String[l.size()];
+           for (int i = 0; i < l.size() - 1; i++) {
+                if (i == 0) {
+                    stringBuilder.append("category,product,price,remainingmoney\n");
+                } else {
+                    column[i] = l.get(i).category + "," + l.get(i).productname + "," + l.get(i).price + "," + l.get(i).remainingmoney + "\n";
+                    stringBuilder.append(column[i]);
+                }
+            }
+            try {
+                File file = getCSVDir("csv.csv");
+                FileWriter fileWriter = new FileWriter(file);
+                fileWriter.write(stringBuilder.toString());
+                fileWriter.flush();
+                fileWriter.close();
+            } catch (FileNotFoundException e) {
+                try {
+                    new ProcessBuilder("mkdir", "/sdcard/Livres").start();
+                } catch (IOException ignored) {}
+                try {
+                    new ProcessBuilder("touch", "/sdcard/Livres/csv.csv").start();
+                } catch (IOException ignored) {}
+                File file = getCSVDir("csv.csv");
+                FileWriter fileWriter = null;
+                try {
+                    fileWriter = new FileWriter(file);
+                    fileWriter.write(stringBuilder.toString());
+                    fileWriter.flush();
+                    fileWriter.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     @OnItemSelected(R.id.spinner2)
     public void onItemSelectedHogeSpinner(Spinner spinner) {
@@ -250,9 +208,7 @@ public class AddActivity extends AppCompatActivity {
             DatePickerDialogFragment datePicker = new DatePickerDialogFragment();
             datePicker.show(getSupportFragmentManager(), "datePicker");
         }
-
     }
-
     public static class DatePickerDialogFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -263,13 +219,10 @@ public class AddActivity extends AppCompatActivity {
             DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), this, year, month, dayOfMonth);
             return datePickerDialog;
         }
-
         public void onDateSet(DatePicker view, final int year, final int month, final int day) {
             final Calendar c = Calendar.getInstance();
             int hour = c.get(Calendar.HOUR_OF_DAY);
             int minute = c.get(Calendar.MINUTE);
-
-
             TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
 
 
@@ -277,8 +230,6 @@ public class AddActivity extends AppCompatActivity {
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                     @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat();
                     format.applyPattern("yyyy/MM/dd/HH:mm");
-
-
                     try {
                         String aaa = String.valueOf(year) + "/" + String.valueOf(month + 1) + "/" + String.valueOf(day) + "/" + String.valueOf(hourOfDay) + ":" + String.valueOf(minute);
                         Date d = format.parse(aaa);

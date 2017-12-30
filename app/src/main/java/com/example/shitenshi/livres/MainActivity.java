@@ -30,15 +30,13 @@ import butterknife.OnItemClick;
 public class MainActivity extends AppCompatActivity {
     @BindView(R.id.myListView)
     ListView myListView;
+
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
-
-
     public static final int PREFERENCE_INIT = 0;
     public static final int PREFERENCE_BOOTED  = 1;
     private static final String PREFS_FILE = "HMPrefs";
     private static final String Havemoney = "Havemoney";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,12 +74,7 @@ public class MainActivity extends AppCompatActivity {
         DbContainer info =list.get(position);
         intent.putExtra("DbContainer", (Serializable) info);
         startActivity(intent);
-
-
-
     }
-
-
 
     private int getState (){
         int state;
@@ -103,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent intent = new Intent(MainActivity.this,PreferenceActivity.class);
+            Intent intent = new Intent(MainActivity.this, PreferenceActivity.class);
             startActivity(intent);
             return true;
         }
@@ -142,9 +135,17 @@ public class MainActivity extends AppCompatActivity {
                 hugou = "-";
 
             }
-            Boolean toggleswitch = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).getBoolean("switch_preference_1", false);
+            Boolean toggleswitch = PreferenceManager
+                    .getDefaultSharedPreferences(MainActivity.this)
+                    .getBoolean("switch_preference_1", false);
             if(!toggleswitch){
-                column[i] ="品目： " + l.get(i).productname + "\n" +hugou+ l.get(i).price + "¥" + "\n" + "残金：" + l.get(i).remainingmoney;
+                column[i] ="品目： "
+                        + l.get(i).productname + "\n"
+                        +hugou
+                        +l.get(i).price
+                        + "¥" + "\n"
+                        + "残金："
+                        +l.get(i).remainingmoney;
             }else{long time = l.get(i).time;
                 Date data = new Date(time);
                 String listdata = data.toString();
@@ -154,7 +155,14 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                column[i] ="品目： " + l.get(i).productname + "\n" +hugou+ l.get(i).price + "¥" + "\n" + "残金：" + l.get(i).remainingmoney + "\n" + viewdata;
+                column[i] ="品目： "
+                        + l.get(i).productname + "\n"
+                        +hugou
+                        +l.get(i).price
+                        + "¥" + "\n"
+                        + "残金："
+                        + l.get(i).remainingmoney + "\n"
+                        + viewdata;
             }
         }
 

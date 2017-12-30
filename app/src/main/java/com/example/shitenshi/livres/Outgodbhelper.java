@@ -75,12 +75,12 @@ public class Outgodbhelper extends SQLiteOpenHelper {
         Cursor cursor = sqLiteDatabase.rawQuery("select * from " + TABLE_NAME + " ORDER BY " + Outgodbhelper.TIME_KEY + " ASC ", null);
         while (cursor.moveToNext()) {
             Integer remainingmoney;
-            if(cursor.getPosition()==0){
-                String nedan = (Objects.equals(cursor.getString(1), "income") ? "+" : "-")+cursor.getInt(3);
+            if (cursor.getPosition() == 0) {
+                String nedan = (Objects.equals(cursor.getString(1), "income") ? "+" : "-") + cursor.getInt(3);
                 remainingmoney = havemoney + Integer.valueOf(nedan);
-            }else{
-                String nedan = (Objects.equals(cursor.getString(1), "income") ? "+" : "-")+cursor.getInt(3);
-                remainingmoney=  Integer.valueOf(nedan) - list.get(i-1).remainingmoney;
+            } else {
+                String nedan = (Objects.equals(cursor.getString(1), "income") ? "+" : "-") + cursor.getInt(3);
+                remainingmoney = list.get(i - 1).remainingmoney - Integer.valueOf(nedan);
             }
 
             list.add(new DbContainer(
@@ -91,12 +91,8 @@ public class Outgodbhelper extends SQLiteOpenHelper {
                     cursor.getLong(5)
             ));
             i++;
-
-
         }
-
         return list;
-
     }
 
     public void deleteItem(long time) {
@@ -107,11 +103,7 @@ public class Outgodbhelper extends SQLiteOpenHelper {
             sqLiteDatabase.setTransactionSuccessful();
         } finally {
             sqLiteDatabase.endTransaction();
-
         }
-
-
-
     }
 
     public void replacedb(int havemoney) {
