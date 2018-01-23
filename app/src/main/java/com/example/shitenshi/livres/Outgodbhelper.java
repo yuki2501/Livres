@@ -80,7 +80,7 @@ public class Outgodbhelper extends SQLiteOpenHelper {
                 remainingmoney = havemoney + Integer.valueOf(nedan);
             } else {
                 String nedan = (Objects.equals(cursor.getString(1), "income") ? "+" : "-") + cursor.getInt(3);
-                remainingmoney = list.get(i - 1).remainingmoney - Integer.valueOf(nedan);
+                remainingmoney = list.get(i - 1).remainingmoney + Integer.valueOf(nedan);
             }
 
             list.add(new DbContainer(
@@ -95,7 +95,7 @@ public class Outgodbhelper extends SQLiteOpenHelper {
         return list;
     }
 
-    public void deleteItem(long time) {
+    void deleteItem(long time) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         sqLiteDatabase.beginTransaction();
         try {
@@ -106,7 +106,7 @@ public class Outgodbhelper extends SQLiteOpenHelper {
         }
     }
 
-    public void replacedb(int havemoney) {
+    void replacedb(int havemoney) {
         List<DbContainer> l1 = getContainers(havemoney);
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         sqLiteDatabase.beginTransaction();
@@ -120,10 +120,6 @@ public class Outgodbhelper extends SQLiteOpenHelper {
             sqLiteDatabase.endTransaction();
         }
     }
-
-
-
-
 }
 
 

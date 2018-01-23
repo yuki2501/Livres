@@ -9,5 +9,15 @@ public  class  PreferenceActivity extends AppCompatActivity implements PrefsFrag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preference);
+        Theme theme = new Theme();
+        theme.themeset(this);
+
+    }
+    @Override
+    protected void onResume(){
+        super.onResume();
+        Theme theme = new Theme();
+        theme.themeset(this);
+
     }
 }

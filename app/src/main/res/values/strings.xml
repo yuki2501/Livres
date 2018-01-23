@@ -16,6 +16,17 @@
         <item>Custom</item>
 
     </string-array>
+    <string-array name="theme">
+        <item>oumurasaki</item>
+        <item>akari</item>
+        <item>kaeru</item>
+
+    </string-array>
+    <string-array name="Theme_value">
+        <item>oumurasaki</item>
+        <item>akari</item>
+        <item>kaeru</item>
+    </string-array>
     <string name="title_activity_settings">Settings</string>
 
     <!-- Strings related to Settings -->

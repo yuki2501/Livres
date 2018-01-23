@@ -30,7 +30,6 @@ import butterknife.OnItemClick;
 public class MainActivity extends AppCompatActivity {
     @BindView(R.id.myListView)
     ListView myListView;
-
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
     public static final int PREFERENCE_INIT = 0;
@@ -40,8 +39,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
+        Theme theme = new Theme();
+        theme.themeset(this);
         myListView = findViewById(R.id.myListView);
         ButterKnife.bind(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -54,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, AddActivity.class);
                 startActivity(intent);
-
             }
         });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -107,6 +109,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Theme theme = new Theme();
+        theme.themeset(this);
         SharedPreferences prefs = getSharedPreferences(PREFS_FILE, Activity.MODE_PRIVATE);
         int havemoney = prefs.getInt(Havemoney,0);
         Outgodbhelper outgodbhelper = new Outgodbhelper(this);
@@ -118,22 +122,14 @@ public class MainActivity extends AppCompatActivity {
         }else{
            nokori.setText(String.valueOf(havemoney) + "円");
         }
-
         //adapter prepare
         String[] column = new String[l.size()];
         String hugou = null;
-
-
         for (int i = 0; i < l.size(); i++) {
-
             if ("income".equals(l.get(i).category)){
-
                 hugou = "+";
-
             } if ("outgo".equals(l.get(i).category)){
-
                 hugou = "-";
-
             }
             Boolean toggleswitch = PreferenceManager
                     .getDefaultSharedPreferences(MainActivity.this)
@@ -151,10 +147,15 @@ public class MainActivity extends AppCompatActivity {
                 String listdata = data.toString();
                 String [] spdata = listdata.split(" ",0);
                 Date d = null;
-                String viewdata = spdata[5] +" "+ spdata[1]+" "+spdata[2]+" "+spdata[0]+" "+spdata[3];
-
-
-
+                String viewdata = spdata[5]
+                                  +" "
+                                  +spdata[1]
+                                  +" "
+                                  +spdata[2]
+                                  +" "
+                                  +spdata[0]
+                                  +" "
+                                  +spdata[3];
                 column[i] ="品目： "
                         + l.get(i).productname + "\n"
                         +hugou

@@ -16,6 +16,12 @@
             android:key="switch_preference_1"
             android:title="時間表示" />
     </PreferenceCategory>
+    <ListPreference
+        android:defaultValue="1"
+        android:entries="@array/theme"
+        android:entryValues="@array/Theme_value"
+        android:key="list_preference_1"
+        android:title="List preference" />
 
 
 </PreferenceScreen>

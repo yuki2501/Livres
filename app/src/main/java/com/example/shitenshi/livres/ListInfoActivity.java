@@ -12,7 +12,10 @@ public class ListInfoActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        Theme theme = new Theme();
+        theme.themeset(this);
         setContentView(R.layout.activity_list_info);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -51,6 +54,13 @@ public class ListInfoActivity extends AppCompatActivity {
 
         }
         return super.onOptionsItemSelected(item);
+    }
+    @Override
+    protected void onResume(){
+        super.onResume();
+        Theme theme = new Theme();
+        theme.themeset(this);
+
     }
 
 

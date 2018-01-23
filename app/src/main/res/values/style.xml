@@ -20,16 +20,34 @@
     <style name="AppTheme.PreferenceTheme">
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
     </style>
-    <style name= "AppTheme.Akari">
+    <style name= "AppTheme.Akari" parent="AppTheme" >
         <item name="colorPrimary">@color/colorPrimary_akari</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark_akari</item>
         <item name="colorAccent">@color/colorAccent_akari</item>
     </style>
-    <style name="AppTheme.kaeru">
+    <style name="AppTheme.kaeru" parent="AppTheme">
         <item name="colorPrimary">@color/colorPrimary_kaeru</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark_kaeru</item>
         <item name="colorAccent">@color/colorAccent_kaeru</item>
 
+    </style>
+    <style name="AppTheme.Akari.NoActionBar" parent="AppTheme.Akari" >
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="AppTheme.kaeru.NoActionBar" parent="AppTheme.kaeru" >
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="AppTheme.PreferenceTheme.Akari" parent="AppTheme.PreferenceTheme">
+        <item name="colorPrimary">@color/colorPrimary_akari</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark_akari</item>
+        <item name="colorAccent">@color/colorAccent_akari</item>
+    </style>
+    <style name="AppTheme.PreferenceTheme.kaeru" parent="AppTheme.PreferenceTheme">
+        <item name="colorPrimary">@color/colorPrimary_kaeru</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark_kaeru</item>
+        <item name="colorAccent">@color/colorAccent_kaeru</item>
     </style>
 
 </resources>
