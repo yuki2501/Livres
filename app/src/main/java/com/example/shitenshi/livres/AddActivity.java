@@ -35,27 +35,22 @@ import butterknife.ButterKnife;
 import butterknife.OnItemSelected;
 
 import static android.widget.Toast.LENGTH_LONG;
-
-
 public class AddActivity extends AppCompatActivity {
-
     private static final int MAIN_ACTIVITY = 101;
     Outgodbhelper outgodbhelper = new Outgodbhelper(this);
-
-
     DatePickerDialogFragment datePickerDialogFragment;
     private static final String PREFS_FILE = "HMPrefs";
     private static final String Havemoney = "Havemoney";
     private static final String Inittime = "Inittime";
     static long time;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addcard);
+        Theme theme = new Theme();
+        theme.themeset(this);
         outgodbhelper = new Outgodbhelper(this);
         datePickerDialogFragment = new DatePickerDialogFragment();
         Button button = (Button) findViewById(R.id.button);
@@ -198,6 +193,7 @@ public class AddActivity extends AppCompatActivity {
     }
 
 
+
     @OnItemSelected(R.id.spinner2)
     public void onItemSelectedHogeSpinner(Spinner spinner) {
         // リストの何番目が選択されたか
@@ -208,6 +204,13 @@ public class AddActivity extends AppCompatActivity {
             DatePickerDialogFragment datePicker = new DatePickerDialogFragment();
             datePicker.show(getSupportFragmentManager(), "datePicker");
         }
+    }
+    @Override
+    protected void onResume(){
+        super.onResume();
+        Theme theme = new Theme();
+        theme.themeset(this);
+
     }
     public static class DatePickerDialogFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
         @Override

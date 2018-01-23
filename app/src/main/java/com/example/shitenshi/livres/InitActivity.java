@@ -19,6 +19,8 @@ public class InitActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
+        Theme theme = new Theme();
+        theme.themeset(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init);
 
@@ -46,6 +48,13 @@ public class InitActivity extends AppCompatActivity {
             }
         });
 
+
+    }
+    @Override
+    protected void onResume(){
+        super.onResume();
+        Theme theme = new Theme();
+        theme.themeset(this);
 
     }
     private void setState (int state){
