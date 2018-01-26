@@ -46,11 +46,10 @@ public class AddActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_addcard);
         Theme theme = new Theme();
         theme.themeset(this);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_addcard);
         outgodbhelper = new Outgodbhelper(this);
         datePickerDialogFragment = new DatePickerDialogFragment();
         Button button = (Button) findViewById(R.id.button);

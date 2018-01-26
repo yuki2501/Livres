@@ -15,12 +15,12 @@ import java.util.Objects;
  */
 
 public class Outgodbhelper extends SQLiteOpenHelper {
-    public static final String TABLE_NAME = "shyushi_table";
-    public static final String CATEGORY_KEY = "category";
-    public static final String PRODUCTNAME_KEY = "productname";
-    public static final String PRICE_KEY = "price";
-    public static final String REMAININGMONEY_KEY = "remainingmoney";
-    public static String TIME_KEY = "time";
+    private static final String TABLE_NAME = "shyushi_table";
+    private static final String CATEGORY_KEY = "category";
+    private static final String PRODUCTNAME_KEY = "productname";
+    private static final String PRICE_KEY = "price";
+    private static final String REMAININGMONEY_KEY = "remainingmoney";
+    private static String TIME_KEY = "time";
     private static final String PREFS_FILE = "HMPrefs";
     private static final String Havemoney = "Havemoney";
     private static final String CREATE_TABLE_SQL = "" + "create table " + TABLE_NAME + "(" +
@@ -52,7 +52,7 @@ public class Outgodbhelper extends SQLiteOpenHelper {
     }
 
     //挿入用メソッド
-    public void insertValues(DbContainer dbContainer) {
+    void insertValues(DbContainer dbContainer) {
         ContentValues values = new ContentValues();
         values.put(Outgodbhelper.CATEGORY_KEY, dbContainer.category);
         values.put(Outgodbhelper.PRODUCTNAME_KEY, dbContainer.productname);
@@ -65,7 +65,7 @@ public class Outgodbhelper extends SQLiteOpenHelper {
     }
 
 
-    public List<DbContainer> getContainers(int havemoney) {
+    List<DbContainer> getContainers(int havemoney) {
         //db
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         List<DbContainer> list = new ArrayList<>();
