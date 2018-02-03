@@ -9,7 +9,7 @@ import android.preference.PreferenceManager;
 
 class Theme {
     void themeset(Context context){
-         String listpre = PreferenceManager
+        String listpre = PreferenceManager
                 .getDefaultSharedPreferences(context)
                 .getString("list_preference_1","akari");
         switch (listpre){
@@ -20,8 +20,9 @@ class Theme {
                 if (context instanceof PreferenceActivity) {
                     context.setTheme(R.style.AppTheme_PreferenceTheme);
                 }else{
-                context.setTheme(R.style.AppTheme_NoActionBar);
+                    context.setTheme(R.style.AppTheme_NoActionBar);
                 }
+                break;
             case "akari":
                 if (context instanceof AddActivity) {
                     context.setTheme(R.style.AppTheme_Akari);
@@ -31,6 +32,7 @@ class Theme {
                 }else{
                     context.setTheme(R.style.AppTheme_Akari_NoActionBar);
                 }
+                break;
             case "kaeru":
                 if (context instanceof AddActivity) {
                     context.setTheme(R.style.AppTheme_kaeru);
@@ -40,6 +42,7 @@ class Theme {
                 }else{
                     context.setTheme(R.style.AppTheme_kaeru_NoActionBar);
                 }
+                break;
         }
     }
 
