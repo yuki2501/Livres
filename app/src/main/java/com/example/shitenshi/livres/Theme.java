@@ -16,27 +16,27 @@ class Theme {
             case "oumurasaki":
                 if (context instanceof AddActivity) {
                     context.setTheme(R.style.AppTheme);
-                }else if (context instanceof PreferenceActivity) {
+                } else if (context instanceof PreferenceActivity) {
                     context.setTheme(R.style.AppTheme_PreferenceTheme);
-                }else{
+                } else {
                     context.setTheme(R.style.AppTheme_NoActionBar);
                 }
                 break;
             case "akari":
                 if (context instanceof AddActivity) {
                     context.setTheme(R.style.AppTheme_Akari);
-                }else if (context instanceof PreferenceActivity) {
+                } else if (context instanceof PreferenceActivity) {
                     context.setTheme(R.style.AppTheme_PreferenceTheme_Akari);
-                }else{
+                } else {
                     context.setTheme(R.style.AppTheme_Akari_NoActionBar);
                 }
                 break;
             case "kaeru":
                 if (context instanceof AddActivity) {
                     context.setTheme(R.style.AppTheme_kaeru);
-                }else if (context instanceof PreferenceActivity) {
+                } else if (context instanceof PreferenceActivity) {
                     context.setTheme(R.style.AppTheme_PreferenceTheme_kaeru);
-                }else{
+                } else{
                     context.setTheme(R.style.AppTheme_kaeru_NoActionBar);
                 }
                 break;
