@@ -9,6 +9,7 @@
     <string name="price">値段</string>
     <string name="product_name">品名</string>
     <string name="balance">残金</string>
+    <string name="theme">テーマ</string>
 
     <string-array name="list">
         <item>支出</item>

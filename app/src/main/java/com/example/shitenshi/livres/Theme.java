@@ -11,7 +11,7 @@ class Theme {
     void themeset(Context context){
         String listpre = PreferenceManager
                 .getDefaultSharedPreferences(context)
-                .getString("list_preference_1","akari");
+                .getString("theme","akari");
         switch (listpre){
             case "oumurasaki":
                 if (context instanceof AddActivity || context instanceof InitActivity) {
