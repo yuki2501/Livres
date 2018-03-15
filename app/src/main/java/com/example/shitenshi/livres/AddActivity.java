@@ -61,7 +61,6 @@ public class AddActivity extends AppCompatActivity {
                 SharedPreferences prefs = getSharedPreferences(PREFS_FILE, Activity.MODE_PRIVATE);
                 Spinner spinner = (Spinner) findViewById(R.id.spinner);
                 int number = spinner.getSelectedItemPosition();
-                String category = spinner.getSelectedItem().toString();
                 EditText n = (EditText) findViewById(R.id.editText2);
                 Editable productname = n.getText();
                 EditText p = (EditText) findViewById(R.id.editText);
@@ -76,10 +75,10 @@ public class AddActivity extends AppCompatActivity {
                     List<DbContainer> l = outgodbhelper.getContainers(havemoney);
                     Integer zandaka;
                     if (l.size() == 0) {
-                        String nedan = (Objects.equals(category, "income") ? "+" : "-") + price;
+                        String nedan = (number == 0 ? "+" : "-") + price;
                         remainingmoney = havemoney + Integer.valueOf(nedan);
                         outgodbhelper.insertValues(new DbContainer(
-                                spinner.getSelectedItem().toString(),
+                                number == 0? "income": "outgo",
                                 productname.toString(),
                                 Integer.valueOf(price.toString()),
                                 remainingmoney,
@@ -88,7 +87,7 @@ public class AddActivity extends AppCompatActivity {
                     } else {
 
                         outgodbhelper.insertValues(new DbContainer(
-                                spinner.getSelectedItem().toString(),
+                                number == 0? "income": "outgo",
                                 productname.toString(),
                                 Integer.valueOf(price.toString()),
                                 remainingmoney,
@@ -113,10 +112,10 @@ public class AddActivity extends AppCompatActivity {
 
                         Integer zandaka;
                         if (l.size() == 0) {
-                            String nedan = (Objects.equals(category, "income") ? "+" : "-") + price;
+                            String nedan = (number == 0 ? "+" : "-") + price;
                             remainingmoney = havemoney + Integer.valueOf(nedan);
                             outgodbhelper.insertValues(new DbContainer(
-                                    spinner.getSelectedItem().toString(),
+                                    number == 0? "income": "outgo",
                                     productname.toString(),
                                     Integer.valueOf(price.toString()),
                                     remainingmoney,
@@ -124,7 +123,7 @@ public class AddActivity extends AppCompatActivity {
                             ));
                         } else {
                             outgodbhelper.insertValues(new DbContainer(
-                                    spinner.getSelectedItem().toString(),
+                                    number == 0? "income": "outgo",
                                     productname.toString(),
                                     Integer.valueOf(price.toString()),
                                     remainingmoney,
