@@ -28,7 +28,8 @@
         <activity android:name=".AddActivity" />
         <activity
             android:name=".InitActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="初期残金"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".PreferenceActivity"
             android:theme="@style/AppTheme.PreferenceTheme" />
