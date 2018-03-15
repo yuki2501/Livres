@@ -37,7 +37,7 @@ import butterknife.OnItemSelected;
 import static android.widget.Toast.LENGTH_LONG;
 public class AddActivity extends AppCompatActivity {
     private static final int MAIN_ACTIVITY = 101;
-    Outgodbhelper outgodbhelper = new Outgodbhelper(this);
+    OutgoDbHelper outgoDbHelper = new OutgoDbHelper(this);
     private static final String PREFS_FILE = "HMPrefs";
     private static final String Havemoney = "Havemoney";
     private static final String Inittime = "Inittime";
@@ -49,7 +49,7 @@ public class AddActivity extends AppCompatActivity {
         theme.themeset(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addcard);
-        outgodbhelper = new Outgodbhelper(this);
+        outgoDbHelper = new OutgoDbHelper(this);
         Button button = findViewById(R.id.button);
         ButterKnife.bind(this);
 
@@ -80,13 +80,13 @@ public class AddActivity extends AppCompatActivity {
                 Integer havemoney = prefs.getInt(Havemoney, 0);
                 Integer remainingmoney = 0;
 
-                Outgodbhelper outgodbhelper = new Outgodbhelper(AddActivity.this);
-                List<DbContainer> l = outgodbhelper.getContainers(havemoney);
+                OutgoDbHelper outgoDbHelper = new OutgoDbHelper(AddActivity.this);
+                List<DbContainer> l = outgoDbHelper.getContainers(havemoney);
 
                 if (l.size() == 0) {
                     String nedan = (number == 0? "+" : "-") + price;
                     remainingmoney = havemoney + Integer.valueOf(nedan);
-                    outgodbhelper.insertValues(new DbContainer(
+                    outgoDbHelper.insertValues(new DbContainer(
                             number == 0? "income": "outgo",
                             productname.toString(),
                             Integer.valueOf(price.toString()),
@@ -94,14 +94,14 @@ public class AddActivity extends AppCompatActivity {
                             time
                     ));
                 } else {
-                    outgodbhelper.insertValues(new DbContainer(
+                    outgoDbHelper.insertValues(new DbContainer(
                             number == 0? "income": "outgo",
                             productname.toString(),
                             Integer.valueOf(price.toString()),
                             remainingmoney,
                             time
                     ));
-                    outgodbhelper.replacedb(havemoney);
+                    outgoDbHelper.replacedb(havemoney);
                 }
                 csvoutput();
                 finish();
@@ -120,7 +120,7 @@ public class AddActivity extends AppCompatActivity {
         if (toggleswitch == Boolean.TRUE) {
             int havemoney = prefs.getInt(Havemoney,0);
             StringBuilder stringBuilder = new StringBuilder();
-            List<DbContainer> l = outgodbhelper.getContainers(havemoney);
+            List<DbContainer> l = outgoDbHelper.getContainers(havemoney);
             String[] column = new String[l.size()];
            for (int i = 0; i < l.size() - 1; i++) {
                 if (i == 0) {
