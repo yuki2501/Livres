@@ -92,6 +92,7 @@ public class Outgodbhelper extends SQLiteOpenHelper {
             ));
             i++;
         }
+        cursor.close();
         return list;
     }
 
