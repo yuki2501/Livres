@@ -1,6 +1,5 @@
 package com.example.shitenshi.livres;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -69,8 +68,8 @@ public class MainActivity extends AppCompatActivity {
         int havemoney = prefs.getInt(Havemoney,0);
 
         Intent intent = new Intent(getApplication(), ListInfoActivity.class);
-        Outgodbhelper outgodbhelper = new Outgodbhelper(this);
-        List<DbContainer> list = outgodbhelper.getContainers(havemoney);
+        OutgoDbHelper outgoDbHelper = new OutgoDbHelper(this);
+        List<DbContainer> list = outgoDbHelper.getContainers(havemoney);
         DbContainer info =list.get(position);
         intent.putExtra("DbContainer", (Serializable) info);
         startActivity(intent);
@@ -103,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    @SuppressLint("SetTextI18n")
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -111,14 +110,14 @@ public class MainActivity extends AppCompatActivity {
         theme.themeset(this);
         SharedPreferences prefs = getSharedPreferences(PREFS_FILE, Activity.MODE_PRIVATE);
         int havemoney = prefs.getInt(Havemoney,0);
-        Outgodbhelper outgodbhelper = new Outgodbhelper(this);
-        List<DbContainer> l = outgodbhelper.getContainers(havemoney);
+        OutgoDbHelper outgoDbHelper = new OutgoDbHelper(this);
+        List<DbContainer> l = outgoDbHelper.getContainers(havemoney);
 
         TextView nokori = findViewById(R.id.textView2);
         if (l.size()>0){
-            nokori.setText(String.valueOf(l.get(l.size()-1).remainingmoney + "円"));
+            nokori.setText(getString(R.string.yen, l.get(l.size()-1).remainingmoney));
         }else{
-           nokori.setText(String.valueOf(havemoney) + "円");
+           nokori.setText(getString(R.string.yen, havemoney));
         }
         //adapter prepare
         String[] column = new String[l.size()];
@@ -132,19 +131,17 @@ public class MainActivity extends AppCompatActivity {
             Boolean toggleswitch = PreferenceManager
                     .getDefaultSharedPreferences(MainActivity.this)
                     .getBoolean("switch_preference_1", false);
-            if(!toggleswitch){
-                column[i] ="品目： "
-                        + l.get(i).productname + "\n"
-                        +hugou
-                        +l.get(i).price
-                        + "¥" + "\n"
-                        + "残金："
-                        +l.get(i).remainingmoney;
-            }else{long time = l.get(i).time;
+
+            StringBuilder stringBuilder = new StringBuilder()
+                    .append(getString(R.string.product_name)).append("： ").append(l.get(i).productname).append("\n")
+                    .append(hugou).append(l.get(i).price).append("¥\n")
+                    .append(getString(R.string.balance)).append("： ").append(l.get(i).remainingmoney);
+
+            if (toggleswitch) {
+                long time = l.get(i).time;
                 Date data = new Date(time);
                 String listdata = data.toString();
                 String [] spdata = listdata.split(" ",0);
-                Date d = null;
                 String viewdata = spdata[5]
                                   +" "
                                   +spdata[1]
@@ -154,15 +151,10 @@ public class MainActivity extends AppCompatActivity {
                                   +spdata[0]
                                   +" "
                                   +spdata[3];
-                column[i] ="品目： "
-                        + l.get(i).productname + "\n"
-                        +hugou
-                        +l.get(i).price
-                        + "¥" + "\n"
-                        + "残金："
-                        + l.get(i).remainingmoney + "\n"
-                        + viewdata;
+                stringBuilder.append("\n").append(viewdata);
             }
+
+            column[i] = stringBuilder.toString();
         }
 
         ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, column);

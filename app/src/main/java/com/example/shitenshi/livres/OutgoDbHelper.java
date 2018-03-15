@@ -14,7 +14,7 @@ import java.util.Objects;
  * Created by shitenshi on 17/10/24.
  */
 
-public class Outgodbhelper extends SQLiteOpenHelper {
+public class OutgoDbHelper extends SQLiteOpenHelper {
     private static final String TABLE_NAME = "shyushi_table";
     private static final String CATEGORY_KEY = "category";
     private static final String PRODUCTNAME_KEY = "productname";
@@ -36,7 +36,7 @@ public class Outgodbhelper extends SQLiteOpenHelper {
     private static final String DROP_TABLE_SQL = "drop table if exists" + TABLE_NAME;
 
 
-    public Outgodbhelper(Context context) {
+    public OutgoDbHelper(Context context) {
         super(context, "syushidb", null, 1);
     }
 
@@ -54,12 +54,12 @@ public class Outgodbhelper extends SQLiteOpenHelper {
     //挿入用メソッド
     void insertValues(DbContainer dbContainer) {
         ContentValues values = new ContentValues();
-        values.put(Outgodbhelper.CATEGORY_KEY, dbContainer.category);
-        values.put(Outgodbhelper.PRODUCTNAME_KEY, dbContainer.productname);
-        values.put(Outgodbhelper.PRICE_KEY, dbContainer.price);
-        values.put(Outgodbhelper.REMAININGMONEY_KEY, dbContainer.remainingmoney);
-        values.put(Outgodbhelper.TIME_KEY, dbContainer.time);
-        getWritableDatabase().insert(Outgodbhelper.TABLE_NAME, null, values);
+        values.put(OutgoDbHelper.CATEGORY_KEY, dbContainer.category);
+        values.put(OutgoDbHelper.PRODUCTNAME_KEY, dbContainer.productname);
+        values.put(OutgoDbHelper.PRICE_KEY, dbContainer.price);
+        values.put(OutgoDbHelper.REMAININGMONEY_KEY, dbContainer.remainingmoney);
+        values.put(OutgoDbHelper.TIME_KEY, dbContainer.time);
+        getWritableDatabase().insert(OutgoDbHelper.TABLE_NAME, null, values);
 
 
     }
@@ -72,7 +72,7 @@ public class Outgodbhelper extends SQLiteOpenHelper {
 
         //select
         Integer i = 0;
-        Cursor cursor = sqLiteDatabase.rawQuery("select * from " + TABLE_NAME + " ORDER BY " + Outgodbhelper.TIME_KEY + " ASC ", null);
+        Cursor cursor = sqLiteDatabase.rawQuery("select * from " + TABLE_NAME + " ORDER BY " + OutgoDbHelper.TIME_KEY + " ASC ", null);
         while (cursor.moveToNext()) {
             Integer remainingmoney;
             if (cursor.getPosition() == 0) {
@@ -92,6 +92,7 @@ public class Outgodbhelper extends SQLiteOpenHelper {
             ));
             i++;
         }
+        cursor.close();
         return list;
     }
 

@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -29,7 +30,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import butterknife.ButterKnife;
 import butterknife.OnItemSelected;
@@ -37,8 +37,7 @@ import butterknife.OnItemSelected;
 import static android.widget.Toast.LENGTH_LONG;
 public class AddActivity extends AppCompatActivity {
     private static final int MAIN_ACTIVITY = 101;
-    Outgodbhelper outgodbhelper = new Outgodbhelper(this);
-    DatePickerDialogFragment datePickerDialogFragment;
+    OutgoDbHelper outgoDbHelper = new OutgoDbHelper(this);
     private static final String PREFS_FILE = "HMPrefs";
     private static final String Havemoney = "Havemoney";
     private static final String Inittime = "Inittime";
@@ -50,101 +49,70 @@ public class AddActivity extends AppCompatActivity {
         theme.themeset(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addcard);
-        outgodbhelper = new Outgodbhelper(this);
-        datePickerDialogFragment = new DatePickerDialogFragment();
-        Button button = (Button) findViewById(R.id.button);
+        outgoDbHelper = new OutgoDbHelper(this);
+        Button button = findViewById(R.id.button);
         ButterKnife.bind(this);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 SharedPreferences prefs = getSharedPreferences(PREFS_FILE, Activity.MODE_PRIVATE);
-                Spinner spinner = (Spinner) findViewById(R.id.spinner);
+                Spinner spinner = findViewById(R.id.spinner);
                 int number = spinner.getSelectedItemPosition();
-                String category = spinner.getSelectedItem().toString();
-                EditText n = (EditText) findViewById(R.id.editText2);
+                EditText n = findViewById(R.id.editText2);
                 Editable productname = n.getText();
-                EditText p = (EditText) findViewById(R.id.editText);
+                EditText p = findViewById(R.id.editText);
                 Editable price = p.getText();
                 SharedPreferences inittime = getSharedPreferences(Inittime, Activity.MODE_PRIVATE);
-                Spinner spinner2 = (Spinner) findViewById(R.id.spinner2);
+                Spinner spinner2 = findViewById(R.id.spinner2);
                 int position = spinner2.getSelectedItemPosition();
-                if (position == 0) {
-                    Integer havemoney = prefs.getInt(Havemoney, 0);
-                    Integer remainingmoney = 0;
-                    Outgodbhelper outgodbhelper = new Outgodbhelper(AddActivity.this);
-                    List<DbContainer> l = outgodbhelper.getContainers(havemoney);
-                    Integer zandaka;
-                    if (l.size() == 0) {
-                        String nedan = (Objects.equals(category, "income") ? "+" : "-") + price;
-                        remainingmoney = havemoney + Integer.valueOf(nedan);
-                        outgodbhelper.insertValues(new DbContainer(
-                                spinner.getSelectedItem().toString(),
-                                productname.toString(),
-                                Integer.valueOf(price.toString()),
-                                remainingmoney,
-                                new Date().getTime()
-                        ));
-                    } else {
 
-                        outgodbhelper.insertValues(new DbContainer(
-                                spinner.getSelectedItem().toString(),
-                                productname.toString(),
-                                Integer.valueOf(price.toString()),
-                                remainingmoney,
-                                new Date().getTime()
-                        ));
-                        outgodbhelper.replacedb(havemoney);
-                    }
-                    csvoutput();
-                    finish();
+                if (position == 0){
+                    time = new Date().getTime();
                 } else {
                     long innittime = inittime.getLong(Inittime, 0);
                     if (innittime >= time) {
-
                         Toast.makeText(AddActivity.this, "日付が古すぎます。", LENGTH_LONG).show();
-                    } else {
-
-                        Integer havemoney = prefs.getInt(Havemoney, 0);
-                        Integer remainingmoney = 0;
-                        ;
-                        Outgodbhelper outgodbhelper = new Outgodbhelper(AddActivity.this);
-                        List<DbContainer> l = outgodbhelper.getContainers(havemoney);
-
-                        Integer zandaka;
-                        if (l.size() == 0) {
-                            String nedan = (Objects.equals(category, "income") ? "+" : "-") + price;
-                            remainingmoney = havemoney + Integer.valueOf(nedan);
-                            outgodbhelper.insertValues(new DbContainer(
-                                    spinner.getSelectedItem().toString(),
-                                    productname.toString(),
-                                    Integer.valueOf(price.toString()),
-                                    remainingmoney,
-                                    time
-                            ));
-                        } else {
-                            outgodbhelper.insertValues(new DbContainer(
-                                    spinner.getSelectedItem().toString(),
-                                    productname.toString(),
-                                    Integer.valueOf(price.toString()),
-                                    remainingmoney,
-                                    time
-                            ));
-                            outgodbhelper.replacedb(havemoney);
-                        }
-                        csvoutput();
-                        finish();
+                        return;
                     }
                 }
+
+                Integer havemoney = prefs.getInt(Havemoney, 0);
+                Integer remainingmoney = 0;
+
+                OutgoDbHelper outgoDbHelper = new OutgoDbHelper(AddActivity.this);
+                List<DbContainer> l = outgoDbHelper.getContainers(havemoney);
+
+                if (l.size() == 0) {
+                    String nedan = (number == 0? "+" : "-") + price;
+                    remainingmoney = havemoney + Integer.valueOf(nedan);
+                    outgoDbHelper.insertValues(new DbContainer(
+                            number == 0? "income": "outgo",
+                            productname.toString(),
+                            Integer.valueOf(price.toString()),
+                            remainingmoney,
+                            time
+                    ));
+                } else {
+                    outgoDbHelper.insertValues(new DbContainer(
+                            number == 0? "income": "outgo",
+                            productname.toString(),
+                            Integer.valueOf(price.toString()),
+                            remainingmoney,
+                            time
+                    ));
+                    outgoDbHelper.replacedb(havemoney);
+                }
+                csvoutput();
+                finish();
             }
         });
     }
 
     public File getCSVDir(String CSV) {
         // Get the directory for the user's public pictures directory.
-        File file = new File(Environment.getExternalStoragePublicDirectory(
+        return new File(Environment.getExternalStoragePublicDirectory(
                 "Livres"), CSV);
-        return file;
     }
     public void csvoutput(){
         SharedPreferences prefs = getSharedPreferences(PREFS_FILE, Activity.MODE_PRIVATE);
@@ -152,7 +120,7 @@ public class AddActivity extends AppCompatActivity {
         if (toggleswitch == Boolean.TRUE) {
             int havemoney = prefs.getInt(Havemoney,0);
             StringBuilder stringBuilder = new StringBuilder();
-            List<DbContainer> l = outgodbhelper.getContainers(havemoney);
+            List<DbContainer> l = outgoDbHelper.getContainers(havemoney);
             String[] column = new String[l.size()];
            for (int i = 0; i < l.size() - 1; i++) {
                 if (i == 0) {
@@ -197,8 +165,7 @@ public class AddActivity extends AppCompatActivity {
     public void onItemSelectedHogeSpinner(Spinner spinner) {
         // リストの何番目が選択されたか
         int position = spinner.getSelectedItemPosition();
-        // 選択されたアイテム名
-        String item = (String) spinner.getSelectedItem();
+
         if (position == 1) {
             DatePickerDialogFragment datePicker = new DatePickerDialogFragment();
             datePicker.show(getSupportFragmentManager(), "datePicker");
@@ -212,14 +179,14 @@ public class AddActivity extends AppCompatActivity {
 
     }
     public static class DatePickerDialogFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+        @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             Calendar calendar = Calendar.getInstance();
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
             int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-            DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), this, year, month, dayOfMonth);
-            return datePickerDialog;
+            return new DatePickerDialog(getActivity(), this, year, month, dayOfMonth);
         }
         public void onDateSet(DatePicker view, final int year, final int month, final int day) {
             final Calendar c = Calendar.getInstance();

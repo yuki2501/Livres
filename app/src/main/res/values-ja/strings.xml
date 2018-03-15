@@ -1,0 +1,28 @@
+<resources>
+    <string name="action_settings">設定</string>
+    <string name="add">追加</string>
+    <string name="item_delete">削除</string>
+    <string name="title_activity_add">カードの追加</string>
+    <string name="shortcut_short_label1">カードの追加</string>
+    <string name="shortcut_long_label1">カードの追加</string>
+    <string name="shortcut_disable_label1">カードの追加の非表示</string>
+    <string name="price">値段</string>
+    <string name="product_name">品名</string>
+    <string name="balance">残金</string>
+    <string name="theme">テーマ</string>
+
+    <string name="incoming">収入</string>
+    <string name="outgoing">支出</string>
+
+    <string name="now">今</string>
+    <string name="custom">カスタム</string>
+
+    <string name="title_activity_settings">設定</string>
+
+    <string name="pref_header_general">一般</string>
+
+    <string name="title_activity_init">初期残金を追加</string>
+    <string name="title_activity_list_info">詳細</string>
+
+    <string name="yen">%d円</string>
+</resources>

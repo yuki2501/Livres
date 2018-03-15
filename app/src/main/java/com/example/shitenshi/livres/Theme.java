@@ -11,10 +11,10 @@ class Theme {
     void themeset(Context context){
         String listpre = PreferenceManager
                 .getDefaultSharedPreferences(context)
-                .getString("list_preference_1","akari");
+                .getString("theme","akari");
         switch (listpre){
             case "oumurasaki":
-                if (context instanceof AddActivity) {
+                if (context instanceof AddActivity || context instanceof InitActivity) {
                     context.setTheme(R.style.AppTheme);
                 } else if (context instanceof PreferenceActivity) {
                     context.setTheme(R.style.AppTheme_PreferenceTheme);
@@ -23,7 +23,7 @@ class Theme {
                 }
                 break;
             case "akari":
-                if (context instanceof AddActivity) {
+                if (context instanceof AddActivity || context instanceof InitActivity) {
                     context.setTheme(R.style.AppTheme_Akari);
                 } else if (context instanceof PreferenceActivity) {
                     context.setTheme(R.style.AppTheme_PreferenceTheme_Akari);
@@ -32,7 +32,7 @@ class Theme {
                 }
                 break;
             case "kaeru":
-                if (context instanceof AddActivity) {
+                if (context instanceof AddActivity || context instanceof InitActivity) {
                     context.setTheme(R.style.AppTheme_kaeru);
                 } else if (context instanceof PreferenceActivity) {
                     context.setTheme(R.style.AppTheme_PreferenceTheme_kaeru);
