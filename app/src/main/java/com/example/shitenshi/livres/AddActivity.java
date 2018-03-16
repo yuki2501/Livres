@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.view.View;
@@ -37,12 +36,12 @@ import butterknife.OnItemSelected;
 import static android.widget.Toast.LENGTH_LONG;
 public class AddActivity extends AppCompatActivity {
     private static final int MAIN_ACTIVITY = 101;
-    Outgodbhelper outgodbhelper = new Outgodbhelper(this);
-    DatePickerDialogFragment datePickerDialogFragment;
+    private Outgodbhelper outgodbhelper = new Outgodbhelper(this);
+    private DatePickerDialogFragment datePickerDialogFragment;
     private static final String PREFS_FILE = "HMPrefs";
     private static final String Havemoney = "Havemoney";
     private static final String Inittime = "Inittime";
-    static long time;
+    private static long time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
