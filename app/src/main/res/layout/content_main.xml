@@ -29,7 +29,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:fontFamily="si"
-        android:text="@string/textview"
         android:textSize="50sp"
         android:gravity="end"
         app:layout_constraintEnd_toEndOf="parent"

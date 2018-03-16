@@ -44,8 +44,8 @@ public class ListInfoActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.item_delete) {
             DbContainer info = (DbContainer) getIntent().getSerializableExtra("DbContainer" );
-            Outgodbhelper outgodbhelper = new Outgodbhelper(this);
-            outgodbhelper.deleteItem(info.time);
+            OutgoDbHelper outgoDbHelper = new OutgoDbHelper(this);
+            outgoDbHelper.deleteItem(info.time);
             finish();
         }if (id == R.id.action_settings){
             Intent intent = new Intent(ListInfoActivity.this,PreferenceActivity.class);

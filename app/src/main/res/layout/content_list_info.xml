@@ -12,7 +12,7 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        tools:text="TextView"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="16dp" />
 
@@ -21,8 +21,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="TextView"
         app:layout_constraintTop_toBottomOf="@+id/textView3"
+        tools:text="TextView"
         tools:layout_editor_absoluteX="16dp" />
 
     <TextView
@@ -30,8 +30,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="TextView"
         app:layout_constraintTop_toBottomOf="@+id/textView4"
+        tools:text="TextView"
         tools:layout_editor_absoluteX="16dp" />
 
     <TextView
@@ -39,7 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="TextView"
         app:layout_constraintTop_toBottomOf="@+id/textView5"
+        tools:text="TextView"
         tools:layout_editor_absoluteX="16dp" />
 </android.support.constraint.ConstraintLayout>
