@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -43,6 +44,7 @@ public class AddActivity extends AppCompatActivity {
     private static final String Havemoney = "Havemoney";
     private static final String Inittime = "Inittime";
     private static long time;
+    private static String path = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,13 +70,12 @@ public class AddActivity extends AppCompatActivity {
                 Spinner spinner2 = findViewById(R.id.spinner2);
                 int position = spinner2.getSelectedItemPosition();
 
-                if (position == 0){
+                if (position == 0) {
                     time = new Date().getTime();
                 } else {
                     long innittime = inittime.getLong(Inittime, 0);
                     if (innittime >= time) {
                         Toast.makeText(AddActivity.this, "日付が古すぎます。", LENGTH_LONG).show();
-                        return;
                     }
                 }
 
@@ -83,29 +84,37 @@ public class AddActivity extends AppCompatActivity {
 
                 OutgoDbHelper outgoDbHelper = new OutgoDbHelper(AddActivity.this);
                 List<DbContainer> l = outgoDbHelper.getContainers(havemoney);
+                if (!TextUtils.isEmpty(productname) || !TextUtils.isEmpty(price)) {
 
-                if (l.size() == 0) {
-                    String nedan = (number == 0? "+" : "-") + price;
-                    remainingmoney = havemoney + Integer.valueOf(nedan);
-                    outgoDbHelper.insertValues(new DbContainer(
-                            number == 0? "income": "outgo",
-                            productname.toString(),
-                            Integer.valueOf(price.toString()),
-                            remainingmoney,
-                            time
-                    ));
-                } else {
-                    outgoDbHelper.insertValues(new DbContainer(
-                            number == 0? "income": "outgo",
-                            productname.toString(),
-                            Integer.valueOf(price.toString()),
-                            remainingmoney,
-                            time
-                    ));
-                    outgoDbHelper.replacedb(havemoney);
+                    if (l.size() == 0) {
+                        String nedan = (number == 0 ? "+" : "-") + price;
+                        remainingmoney = havemoney + Integer.valueOf(nedan);
+                        outgoDbHelper.insertValues(new DbContainer(
+                                number == 0 ? "income" : "outgo",
+                                productname.toString(),
+                                Integer.valueOf(price.toString()),
+                                remainingmoney,
+                                time
+                        ));
+                    } else {
+                        outgoDbHelper.insertValues(new DbContainer(
+                                number == 0 ? "income" : "outgo",
+                                productname.toString(),
+                                Integer.valueOf(price.toString()),
+                                remainingmoney,
+                                time
+                        ));
+                        outgoDbHelper.replacedb(havemoney);
+                    }
+                    try {
+                        csvoutput();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    finish();
+                }else{
+                    Toast.makeText(AddActivity.this, "何か入力してください", LENGTH_LONG).show();
                 }
-                csvoutput();
-                finish();
             }
         });
     }
@@ -115,47 +124,49 @@ public class AddActivity extends AppCompatActivity {
         return new File(Environment.getExternalStoragePublicDirectory(
                 "Livres"), CSV);
     }
-    public void csvoutput(){
+    public void csvoutput() throws IOException {
         SharedPreferences prefs = getSharedPreferences(PREFS_FILE, Activity.MODE_PRIVATE);
         Boolean toggleswitch = PreferenceManager.getDefaultSharedPreferences(AddActivity.this).getBoolean("switch_preference", false);
         if (toggleswitch == Boolean.TRUE) {
+            int Month = new Date().getMonth();
             int havemoney = prefs.getInt(Havemoney,0);
             StringBuilder stringBuilder = new StringBuilder();
             List<DbContainer> l = outgoDbHelper.getContainers(havemoney);
             String[] column = new String[l.size()];
            for (int i = 0; i < l.size() - 1; i++) {
                 if (i == 0) {
-                    stringBuilder.append("category,product,price,remainingmoney\n");
+                    stringBuilder.append("category,product,price,remainingmoney,time\n");
                 } else {
-                    column[i] = l.get(i).category + "," + l.get(i).productname + "," + l.get(i).price + "," + l.get(i).remainingmoney + "\n";
+                    column[i] = l.get(i).category + "," + l.get(i).productname + "," + l.get(i).price + "," + l.get(i).remainingmoney + l.get(i).time+"\n";
                     stringBuilder.append(column[i]);
                 }
-            }
+           }
             try {
-                File file = getCSVDir("csv.csv");
+                File file = getCSVDir(Month+".csv");
                 FileWriter fileWriter = new FileWriter(file);
                 fileWriter.write(stringBuilder.toString());
                 fileWriter.flush();
                 fileWriter.close();
             } catch (FileNotFoundException e) {
-                try {
-                    new ProcessBuilder("mkdir", "/sdcard/Livres").start();
-                } catch (IOException ignored) {}
-                try {
-                    new ProcessBuilder("touch", "/sdcard/Livres/csv.csv").start();
-                } catch (IOException ignored) {}
-                File file = getCSVDir("csv.csv");
-                FileWriter fileWriter = null;
-                try {
-                    fileWriter = new FileWriter(file);
-                    fileWriter.write(stringBuilder.toString());
-                    fileWriter.flush();
-                    fileWriter.close();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+
+
+                    path = Environment.getExternalStorageDirectory().getPath()+"/Livres";
+                    File csv_folder = new File(path);
+                    File require_csv = new File(path+"/"+Month+".csv");
+                    if (!csv_folder.exists()){
+                        new ProcessBuilder("mkdir" , path).start();
+                        new ProcessBuilder("touch", path + "/" +Month +".csv").start();
+                    }
+                    else if (csv_folder.exists() && !require_csv.exists()){
+                        new ProcessBuilder("touch", path +"/csv.csv").start();
+                    }
+                File file = getCSVDir(Month+".csv");
+                FileWriter fileWriter;
+                fileWriter = new FileWriter(file);
+                fileWriter.write(stringBuilder.toString());
+                fileWriter.flush();
+                fileWriter.close();
+
             }
         }
     }

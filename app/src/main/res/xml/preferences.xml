@@ -22,6 +22,11 @@
         android:entryValues="@array/Theme_value"
         android:key="theme"
         android:title="@string/theme" />
+    <Preference
+        android:key="import"
+        android:title="import"
+        android:summary="Import function" />
+
 
 
 </PreferenceScreen>

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.preference.PreferenceManager;
 
 /**
- * Created by masuken111 on 2017/12/31.
+ * Created by shitenshi on 2017/12/31.
  */
 
 class Theme {
